@@ -1,0 +1,46 @@
+/* Demo */
+:root:not(.theme-dark) {
+  --tv-color-platform-background: transparent;
+  --tv-color-pane-background: transparent;
+  --tv-color-pane-background-secondary: rgb(20, 72, 116);
+  --tv-color-toolbar-button-background-hover: rgb(20, 72, 116);
+  --tv-color-toolbar-button-background-secondary-hover: rgb(64, 127, 182);
+  --tv-color-toolbar-button-background-expanded: rgb(20, 72, 116);
+  --tv-color-toolbar-button-text: rgb(255,255,255);
+  --tv-color-toolbar-button-text-hover: rgb(255,255,255);
+  --tv-color-toolbar-button-text-active: rgb(64, 127, 182);
+  --tv-color-toolbar-button-text-active-hover: rgb(64, 127, 182);
+  --tv-color-item-active-text: rgb(20, 72, 116);
+  --tv-color-toolbar-toggle-button-background-active: rgb(64, 127, 182);
+  --tv-color-toolbar-toggle-button-background-active-hover: rgb(20, 72, 116);
+}
+
+.theme-dark:root {
+  --tv-color-platform-background: transparent;
+  --tv-color-pane-background: transparent;
+  --tv-color-pane-background-secondary: rgb(20, 72, 116);
+  --tv-color-toolbar-button-background-hover: rgb(20, 72, 116);
+  --tv-color-toolbar-button-background-secondary-hover: red;
+  --tv-color-toolbar-button-background-expanded: rgb(20, 72, 116);
+  --tv-color-toolbar-button-text: rgb(255,255,255);
+  --tv-color-toolbar-button-text-hover: rgb(255,255,255);
+  --tv-color-toolbar-button-text-active: rgb(64, 127, 182);
+  --tv-color-toolbar-button-text-active-hover: rgb(64, 127, 182);
+  --tv-color-item-active-text: rgb(20, 72, 116);
+  --tv-color-toolbar-toggle-button-background-active: rgb(64, 127, 182);
+  --tv-color-toolbar-toggle-button-background-active-hover: rgb(20, 72, 116);
+}
+
+
+.pane canvas:first-child {
+  background-image: url('/images/Vector.png');
+  background-size: 400px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@media screen and (max-width: 576px){
+  .pane canvas:first-child {
+    background-size: 150px;
+  }
+}

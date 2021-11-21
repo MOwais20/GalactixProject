@@ -1,14 +1,12 @@
 <template>
-  <v-footer :absolute="!fixed" app height="350px" color="#181A20">
-   
+  <v-footer min-height="350" color="#191C24">
+    <v-row no-gutters dense justify="center">
+      <v-col align="left" :cols="$vuetify.breakpoint.xsOnly ? '12' : '6'" md="6" sm="12">
+        <v-row no-gutters dense class="white--text text-center">
+          <v-col align="center" :cols="$vuetify.breakpoint.xsOnly ? '12' : '4'">
+            <h3 class="my-3 ft-20 font_wght700 white--text">ABOUT</h3>
 
-    <v-row>
-      <v-col xs="12" sm="12" lg="9" >
-        <v-row class="white--text text-center">
-          <v-col>
-            <h3 class="my-3">ABOUT</h3>
-
-            <div class="robotoFont">
+            <div class="robotoFont ft-16 font_wght500">
               <div class="py-1">
                 <NuxtLink to="#"> About us </NuxtLink>
               </div>
@@ -31,10 +29,10 @@
             </div>
           </v-col>
 
-          <v-col>
-            <h3 class="my-3">TRADE</h3>
+          <v-col align="center" :cols="$vuetify.breakpoint.xsOnly ? '12' : '4'" >
+            <h3 class="my-3 ft-20 font_wght700 white--text">TRADE</h3>
 
-            <div class="robotoFont">
+            <div class="robotoFont ft-16 font_wght500">
               <div class="py-1">
                 <NuxtLink to="#"> API </NuxtLink>
               </div>
@@ -57,10 +55,10 @@
             </div>
           </v-col>
 
-          <v-col>
-            <h3 class="my-3">LEGAL</h3>
+          <v-col align="center" :cols="$vuetify.breakpoint.xsOnly ? '12' : '4'">
+            <h3 class="my-3 ft-20 font_wght700 white--text">LEGAL</h3>
 
-            <div class="robotoFont">
+            <div class="robotoFont ft-16 font_wght500">
               <div class="py-1">
                 <NuxtLink to="#"> Privacy </NuxtLink>
               </div>
@@ -73,7 +71,7 @@
         </v-row>
       </v-col>
 
-      <v-col class="pa-0" xs="12" sm="12" lg="3" align-self="center">
+      <v-col align="center" :cols="$vuetify.breakpoint.xsOnly ? '12' : '6'" md="4" align-self="center">
         <v-img
           max-width="279px"
           height="56px"

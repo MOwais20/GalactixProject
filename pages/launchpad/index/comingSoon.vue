@@ -1,6 +1,6 @@
 <template>
   <div>
-      KYC
+      <LaunchpadListCard />
   </div>
 </template>
 

@@ -24,9 +24,10 @@
               <v-btn
                 width="152px"
                 height="48px"
-                class="mt-10"
+                class="mt-10 black--text"
                 depressed
                 color="primary"
+                href="/signUp"
               >
                 Sign up now
               </v-btn>
@@ -170,23 +171,34 @@
         >
           <h3 class="font_wght700 ft-30">Market</h3>
 
-          <v-btn text plain>
+          <v-btn to="/market" text plain>
             <v-subheader class="font_wght700 ft-14 black--text"
               >View all</v-subheader
             >
-            <v-img
-              max-height="16px"
-              max-width="16px"
-              src="/img/CaretRight.png"
-            ></v-img>
+            <svg
+              width="17"
+              height="16"
+              viewBox="0 0 17 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.00391 3L11.0039 8L6.00391 13"
+                :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </v-btn>
         </v-row>
 
-        <v-row dense style="max-width: 1180px" class="mx-auto">
-          <v-col>
-            <v-card class="round elevation-0">
+        <v-row style="width: 80%" dense>
+          <v-col class="pa-0" align="center">
+            <v-card max-width="1180" class="round elevation-0">
               <v-card-text>
                 <v-data-table
+                  dense
                   :headers="headers"
                   :items="coinsList"
                   hide-default-footer
@@ -194,11 +206,22 @@
                   <template v-slot:item="{ item }">
                     <tr>
                       <td>
-                        <v-img
-                          :src="item.coinImg"
-                          max-height="40px"
-                          max-width="40px"
-                        ></v-img>
+                        <div class="d-flex flex-row align-center">
+                          <v-img
+                            :src="item.coinImg"
+                            max-height="40px"
+                            max-width="40px"
+                            class="mx-2"
+                          ></v-img>
+
+                          <span class="font-weight-black ft-18">{{
+                            item.label
+                          }}</span>
+                          <span
+                            class="font-weight-bold grey--text ft-18 mx-2"
+                            >{{ item.name }}</span
+                          >
+                        </div>
                       </td>
                       <td class="text-right">
                         <span
@@ -228,7 +251,9 @@
                         ></v-img>
                       </td>
                       <td class="text-right">
-                        <v-btn class="mx-5" color="primary" depressed> BUY </v-btn>
+                        <v-btn class="mx-5" color="primary" depressed>
+                          BUY
+                        </v-btn>
                       </td>
                     </tr>
                   </template>
@@ -324,12 +349,59 @@
               <v-col
                 :align="$vuetify.breakpoint.mdAndDown ? 'center' : 'start'"
               >
-                <v-img
+                <!-- <v-img
                   :max-width="$vuetify.breakpoint.mdAndDown ? '30vh' : '480px'"
                   max-height="149px"
                   alt="coins"
                   src="/img/appstore.png"
-                ></v-img>
+                ></v-img> -->
+
+                <div
+                  class="
+                    d-flex
+                    flex-row flex-wrap
+                    align-start
+                    justify-space-between
+                  "
+                >
+                  <div class="d-flex flex-column">
+                    <v-img
+                      width="234px"
+                      height="70px"
+                      class="my-2"
+                      alt="downloadOnPlaystore"
+                      src="/icons/playstore.png"
+                    ></v-img>
+
+                    <v-img
+                      width="234px"
+                      height="70px"
+                      class="my-2"
+                      alt="downloadOnPlaystore"
+                      src="/icons/downloadAppstore.png"
+                    ></v-img>
+                  </div>
+
+                  <div class="d-flex align-self-center">
+                    <span>Or</span>
+                  </div>
+
+                  <div>
+                    <v-img
+                      width="116px"
+                      height="116px"
+                      class="my-2"
+                      alt="downloadOnPlaystore"
+                      :src="
+                        $vuetify.theme.dark
+                          ? '/icons/QRDownload-Dark.png'
+                          : '/icons/QRDownload-Light.png'
+                      "
+                    ></v-img>
+
+                    <span class="ft-14 font_wght400">Scan to download</span>
+                  </div>
+                </div>
               </v-col>
             </v-row>
           </v-col>
@@ -345,7 +417,7 @@
         </v-row>
       </v-container>
 
-      <div class="account-banner my-15">
+      <div class="account-banner my-15" :style="{background: $vuetify.theme.dark ? '#1d2027' : '#fffaeb'}">
         <v-container fill-height class="mx-auto">
           <v-row wrap justify="center" style="width: 1180px">
             <v-col align="start">
@@ -364,6 +436,8 @@
                   width="107px"
                   height="40px"
                   depressed
+                  nuxt
+                  to="/trade"
                   class="mx-1 outlined"
                 >
                   Trade now
@@ -373,6 +447,8 @@
                   width="137px"
                   height="40px"
                   depressed
+                  nuxt
+                  to="/signUp"
                   class="mx-1"
                   color="primary"
                 >
@@ -397,11 +473,21 @@
           <v-subheader class="font_wght700 ft-14 black--text"
             >View all</v-subheader
           >
-          <v-img
-            max-height="16px"
-            max-width="16px"
-            src="/img/CaretRight.png"
-          ></v-img>
+          <svg
+              width="17"
+              height="16"
+              viewBox="0 0 17 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.00391 3L11.0039 8L6.00391 13"
+                :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
         </v-btn>
       </v-row>
 
@@ -449,6 +535,8 @@ export default {
       coinsList: [
         {
           coinImg: "/img/Bitcoin.png",
+          name: "Bitcoin",
+          label: "BTC",
           price: "42,226.8",
           change: 1.45,
           market: true,
@@ -456,24 +544,32 @@ export default {
         {
           coinImg: "/icons/Litecoin.png",
           price: "3.405.81",
+          name: "Litecoin",
+          label: "LTH",
           change: 1.45,
           market: false,
         },
         {
           coinImg: "/img/Ethereum.png",
           price: "182",
+          name: "Etherium",
+          label: "ETH",
           change: 1.45,
           market: true,
         },
         {
           coinImg: "/icons/Neo.png",
           price: "51.5",
+          name: "NEO",
+          label: "NEO",
           change: 1.45,
           market: false,
         },
         {
           coinImg: "/icons/BNB.png",
           price: "442.6",
+          name: "BNB",
+          label: "BNB",
           change: 1.45,
           market: true,
         },
@@ -489,14 +585,13 @@ export default {
   bottom: 100px !important;
 }
 
-.Homebg-color {
-  background-color: #e5e5e5;
-}
+// .Homebg-color {
+//   background-color: #e5e5e5;
+// }
 
 .account-banner {
   width: 100%;
   height: 360px;
-  background: #fffaeb;
 }
 
 /* Ellipse */

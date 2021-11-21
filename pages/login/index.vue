@@ -5,14 +5,10 @@
       :class="$vuetify.breakpoint.mdAndUp ? 'outlined' : ''"
       align="center"
       class="bg-white"
+      :style="{ backgroundColor: $vuetify.theme.dark ? '#1D2027' : '#FFFFFF' }"
       no-gutters
     >
-      <v-col
-        md="6"
-        align-self="center"
-        class="pa-0"
-        v-if="renderColumn"
-      >
+      <v-col md="6" align-self="center" class="pa-0" v-if="renderColumn">
         <v-img
           alt="signUp_img"
           lazy-src="/img/signIn.png"
@@ -30,7 +26,7 @@
               >Login in with</span
             >
 
-            <v-row class="py-3" justify="center">
+            <v-row class="py-3 tab-btns" justify="center">
               <v-col cols="6" align="end">
                 <v-btn
                   :width="$vuetify.breakpoint.smAndDown ? 'auto' : '155.89px'"
@@ -66,6 +62,7 @@
                 class="py-1"
                 filled
                 width="332px"
+                v-model="email"
                 dense
                 placeholder="Email"
               ></v-text-field>
@@ -76,7 +73,7 @@
               <v-row dense wrap class="py-1">
                 <v-col cols="5">
                   <v-select
-                    v-model="selectedPhoneNumber"
+                    v-model="selectedCountryCode"
                     :items="['+82', '+75']"
                     menu-props="auto"
                     placeholder="Select"
@@ -98,12 +95,23 @@
                       {{ item }}
                     </template>
                     <template v-slot:append>
-                      <img
-                        class="pointer"
-                        width="16"
-                        height="16"
-                        src="../../static/img/CaretDown.png"
-                      />
+                      <!-- Caret Down -->
+                      <svg
+                        class="mx-2"
+                        width="12"
+                        height="7"
+                        viewBox="0 0 12 7"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 1L6 6L1 1"
+                          :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
                     </template>
                   </v-select>
                 </v-col>
@@ -111,7 +119,7 @@
                 <v-col cols="7">
                   <v-text-field
                     filled
-                    type="number"
+                    v-model="phoneNumber"
                     width="202px"
                     hide-details
                     placeholder="Phone number"
@@ -127,7 +135,7 @@
               name="input-10-2"
               placeholder="Password"
               hint="At least 8 characters"
-              value="1346"
+              v-model="password"
               width="332px"
               filled
             >
@@ -161,6 +169,8 @@
               max-width="332px"
               height="42px"
               depressed
+              nuxt
+              @click.stop="login"
               class="text-capitalize black--text mb-6"
             >
               Log in
@@ -249,9 +259,9 @@
 
             <div class="py-2 text-center font-weight-bold">
               Doesn’t have account ?
-              <a href="/signUp" @click.stop class="font-weight-bold">
+              <nuxt-link to="/signUp" class="font-weight-bold">
                 Sign Up
-              </a>
+              </nuxt-link>
             </div>
           </v-layout>
         </v-container>
@@ -261,6 +271,7 @@
 </template>
 <script>
 import EyeIcon from "../../static/img/EyeClosed.png";
+import { mapActions } from "vuex";
 
 export default {
   layout: "Blank",
@@ -271,10 +282,13 @@ export default {
   },
   data() {
     return {
+      email: null,
+      password: "",
+      phoneNumber: null,
       isMounted: false,
       showEmail: false,
       checkbox: null,
-      selectedPhoneNumber: "+82",
+      selectedCountryCode: "+82",
       showPassword: false,
       rules: {
         required: (value) => !!value || "Required.",
@@ -289,23 +303,74 @@ export default {
     renderColumn() {
       if (!this.isMounted) return true;
       return this.$vuetify.breakpoint.mdAndUp;
-    }
+    },
+  },
+  methods: {
+    ...mapActions("auth", ["setloginDetails"]),
+    login() {
+      if (this.showEmail) {
+        let loginWithEmail = {
+          email: this.email,
+          password: this.password,
+        };
+
+        this.$api.authService
+          .loginViaEmail(loginWithEmail)
+          .then((response) => {
+            // storing loginDetails in state
+            this.setloginDetails(response.data);
+            if (response.status == 200) this.$router.push("/");
+
+            return response;
+          })
+          .catch((error) => {
+            throw error;
+          });
+      } else {
+        let loginWithPhone = {
+          country_code: this.selectedCountryCode,
+          phone_number: this.phoneNumber,
+          password: this.password,
+        };
+
+        this.$api.authService
+          .loginViaPhone(loginWithPhone)
+          .then((response) => {
+            // storing loginDetails in state
+            this.setloginDetails(response.data);
+            if (response.status == 200) this.$router.push("/");
+
+            return response;
+          })
+          .catch((error) => {
+            throw error;
+          });
+      }
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.bg-color {
-  background-color: #f4f4f4 !important;
-}
-
 .login_fields {
   max-width: 332px !important;
 }
 
-.phoneSelector > .theme--light.v-text-field--filled > .v-input__control > .v-input__slot {
-  background: #FFFFFF !important;
+.tab-btns {
+  .theme--light.v-btn.v-btn--has-bg {
+    background-color: #ffe89d !important;
+  }
+
+  .theme--dark.v-btn.v-btn--has-bg {
+    background-color: #2a2f3a !important;
+  }
 }
 
+.phoneSelector
+  > .theme--light.v-text-field--filled
+  > .v-input__control
+  > .v-input__slot {
+  background: #ffffff !important;
+}
 </style>
 

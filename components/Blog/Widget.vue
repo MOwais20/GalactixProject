@@ -1,12 +1,12 @@
 <template>
-  <v-container fill-height>
-    <div class="d-flex flex-row mx-auto">
+  <v-container class="pa-0">
+    <div class="d-flex flex-row flex-wrap justify-center">
       <v-card
         v-for="data in blogData"
         :key="data.id"
         flat
         class="mx-1 my-6"
-        max-width="381"
+        max-width="380"
         max-height="414"
       >
         <template slot="progress">
@@ -17,7 +17,7 @@
           ></v-progress-linear>
         </template>
 
-        <v-img height="200" :src="data.img"></v-img>
+        <v-img height="200px" max-width="381px" :src="data.img"></v-img>
 
         <v-subheader
           :style="{ color: data.color, height: '32px' }"
@@ -25,15 +25,17 @@
           >{{ data.category }}</v-subheader
         >
 
-        <v-card-title class="font_wght700 ft-18 py-1">{{
-          data.title
-        }}</v-card-title>
+        <div @click="$router.push('/blog/detail')" class="pointer">
+          <v-card-title class="font_wght700 ft-18 py-1">{{
+            data.title
+          }}</v-card-title>
 
-        <v-card-text>
-          <div class="font_wght400 ft-14">
-            {{ data.info }}
-          </div>
-        </v-card-text>
+          <v-card-text>
+            <div class="font_wght400 ft-14">
+              {{ data.info }}
+            </div>
+          </v-card-text>
+        </div>
 
         <v-card-actions>
           <v-img
@@ -72,7 +74,7 @@ export default {
           title: "Learn about Crust Network & Take a Short Quiz to Earn $CRU",
           info: "The popular video sharing app TikTok has introduced new restrictions that will prevent its users…",
           views: 120,
-          datePublished: "4 phút trước",
+          datePublished: "4 minutes ago",
         },
         {
           id: 2,
@@ -82,7 +84,7 @@ export default {
           title: "Learn about Crust Network & Take a Short Quiz to Earn $CRU",
           info: "The popular video sharing app TikTok has introduced new restrictions that will prevent its users…",
           views: 120,
-          datePublished: "8 phút trước",
+          datePublished: "8 minutes ago",
         },
         {
           id: 3,
@@ -92,7 +94,7 @@ export default {
           title: "Learn about Crust Network & Take a Short Quiz to Earn $CRU",
           info: "The popular video sharing app TikTok has introduced new restrictions that will prevent its users…",
           views: 120,
-          datePublished: "12 phút trước",
+          datePublished: "12 minutes ago",
         },
       ],
     };

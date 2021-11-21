@@ -110,35 +110,37 @@
         <v-row class="socaialmx-width my-2" justify="center" no-gutters>
           <v-col align-self="center">
             <div class="d-flex flex-row justify-center">
-              <v-img
-                class="ma-2"
-                max-width="40px"
-                height="40px"
-                src="/img/FacebookOrg.png"
-              ></v-img>
-
-              <v-avatar size="40px" class="outlined ma-5">
+              <v-avatar size="40px" class="ma-5">
                 <v-img
                   class="ma-2"
-                  max-width="24px"
-                  height="19.5px"
+                  width="42px"
+                  height="42px"
+                  src="/img/FacebookOrg.png"
+                ></v-img>
+              </v-avatar>
+
+              <div class="outlined ma-5 rounded-xl">
+                <v-img
+                  class="ma-2"
+                  width="auto"
+                  height="auto"
                   src="/img/twitterOrg.png"
                 ></v-img>
-              </v-avatar>
+              </div>
 
-              <v-avatar size="40px" class="outlined ma-5">
+              <div class="outlined ma-5 rounded-xl">
                 <v-img
                   class="ma-2"
-                  max-width="24px"
-                  height="19.5px"
+                  width="24px"
+                  height="24px"
                   src="/img/ShareNetwork.png"
                 ></v-img>
-              </v-avatar>
+              </div>
             </div>
           </v-col>
         </v-row>
       </v-card>
-      
+
       <div class="d-flex flex-column mx-auto">
         <h1 class="font-weight-bold pt-10 pl-5">Related Post</h1>
         <BlogWidget />
@@ -156,8 +158,8 @@ export default {
         {
           id: 1,
           imgURL: "/img/FacebookOrg.png",
-          width: "40px",
-          height: "40px",
+          width: "24px",
+          height: "24px",
           align: "right",
         },
         {

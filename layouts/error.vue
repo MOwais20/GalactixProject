@@ -1,40 +1,58 @@
 <template>
-  <v-app dark>
+  <v-app>
     <h1 v-if="error.statusCode === 404">
       {{ pageNotFound }}
     </h1>
     <h1 v-else>
       {{ otherError }}
     </h1>
-    <NuxtLink to="/">
-      Home page
-    </NuxtLink>
+    <NuxtLink to="/"> Home page </NuxtLink>
   </v-app>
 </template>
 
 <script>
 export default {
-  layout: 'empty',
+  layout: "empty",
   props: {
     error: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
-  data () {
+  data() {
     return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
-    }
+      pageNotFound: "404 Not Found",
+      otherError: "An error occurred",
+    };
   },
-  head () {
+  head() {
     const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
+      this.error.statusCode === 404 ? this.pageNotFound : this.otherError;
     return {
-      title
+      title,
+    };
+  },
+  mounted() {
+    const theme = localStorage.getItem("theme");
+    if (theme == "true") {
+      this.$vuetify.theme.dark = true;
+      this.darkMode = true;
+    } else {
+      this.$vuetify.theme.dark = false;
+      this.darkMode = false;
     }
-  }
-}
+  },
+  computed: {
+    darkMode: {
+      get() {
+        return this.$store.getters["global/darkMode"];
+      },
+      set(val) {
+        this.$store.dispatch("global/toggleDarkMode", val);
+      },
+    },
+  },
+};
 </script>
 
 <style scoped>

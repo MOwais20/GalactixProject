@@ -3,16 +3,12 @@
     <v-row
       justify="center"
       :class="$vuetify.breakpoint.mdAndUp ? 'outlined' : ''"
+      :style="{ backgroundColor: $vuetify.theme.dark ? '#1D2027' : '#FFFFFF' }"
       align="center"
       no-gutters
       class="bg-white"
     >
-      <v-col
-        md="6"
-        align-self="center"
-        class="pa-0"
-        v-if="renderColumn"
-      >
+      <v-col md="6" align-self="center" class="pa-0" v-if="renderColumn">
         <v-img
           alt="signUp_img"
           lazy-src="/img/signUp-bg.png"
@@ -67,6 +63,7 @@
               <v-text-field
                 style="max-width: 332px"
                 filled
+                v-model="registerData.name"
                 hide-details
                 placeholder="Your name"
               ></v-text-field>
@@ -77,6 +74,7 @@
               <v-text-field
                 style="max-width: 332px"
                 filled
+                v-model="registerData.email"
                 hide-details
                 placeholder="Email"
               ></v-text-field>
@@ -87,10 +85,10 @@
               <v-row dense wrap style="max-width: 332px">
                 <v-col cols="5" align="left">
                   <v-select
-                    v-model="selectedPhoneNumber"
+                    v-model="registerData.country_code"
                     :items="['+82', '+75']"
                     menu-props="auto"
-                    placeholder="Select"
+                    placeholder="+00"
                     hide-details
                     style="max-width: 120px"
                     single-line
@@ -99,7 +97,7 @@
                   >
                     <template v-slot:prepend-inner>
                       <img
-                        class="pointer mx-2"
+                        class="pointer mr-2"
                         width="20"
                         height="20"
                         src="../../static/flagIcons/vietnam.png"
@@ -109,12 +107,23 @@
                       {{ item }}
                     </template>
                     <template v-slot:append>
-                      <img
-                        class="pointer"
-                        width="16"
-                        height="16"
-                        src="../../static/img/CaretDown.png"
-                      />
+                      <!-- Caret Down -->
+                      <svg
+                        class="mx-2"
+                        width="12"
+                        height="7"
+                        viewBox="0 0 12 7"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11 1L6 6L1 1"
+                          :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
                     </template>
                   </v-select>
                 </v-col>
@@ -123,7 +132,7 @@
                   <v-text-field
                     filled
                     hide-details
-                    type="number"
+                    v-model="registerData.phoneNumber"
                     style="max-width: 202px"
                     placeholder="Phone number"
                   ></v-text-field>
@@ -132,7 +141,7 @@
             </div>
 
             <div class="py-2">
-              <span >Password</span>
+              <span>Password</span>
               <v-text-field
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="[rules.required, rules.min]"
@@ -140,10 +149,10 @@
                 name="input-10-2"
                 placeholder="Password"
                 hint="At least 8 characters"
-                value="1346"
                 class="input-group--focused"
                 style="max-width: 332px"
                 filled
+                v-model="registerData.password"
                 dense
                 @click:append="showPassword = !showPassword"
               >
@@ -166,15 +175,51 @@
               </v-text-field>
             </div>
 
-            <span class="py-1">Referral ID (Option)</span>
+            <div class="py-2">
+              <span>Confirm password</span>
+              <v-text-field
+                :append-icon="showConfirmPass ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="[rules.required, rules.min]"
+                :type="showConfirmPass ? 'text' : 'password'"
+                name="input-10-2"
+                placeholder="Password"
+                hint="At least 8 characters"
+                class="input-group--focused"
+                style="max-width: 332px"
+                filled
+                v-model="registerData.password_confirmation"
+                dense
+                @click:append="showConfirmPass = !showConfirmPass"
+              >
+                <template v-slot:append>
+                  <v-icon
+                    color="black"
+                    @click="showConfirmPass = !showConfirmPass"
+                    v-if="showConfirmPass"
+                    >mdi-eye</v-icon
+                  >
+                  <img
+                    @click="showConfirmPass = !showConfirmPass"
+                    v-else
+                    class="pointer"
+                    width="20"
+                    height="20"
+                    src="../../static/img/EyeClosed.png"
+                  />
+                </template>
+              </v-text-field>
+            </div>
+
+            <span class="py-1">Referral ID (Optional)</span>
             <v-text-field
               style="max-width: 332px"
               filled
+              v-model="registerData.ref_id"
               hide-details
               placeholder="Referral ID"
             ></v-text-field>
 
-            <v-checkbox v-model="checkbox">
+            <v-checkbox v-model="registerData.privacyPolicyAccepted">
               <template v-slot:label>
                 <div class="font-weight-regular black--text">
                   I accept with
@@ -190,6 +235,7 @@
               max-width="332"
               height="42px"
               depressed
+              @click="register"
               class="text-capitalize black--text mb-6 font-weight-bold"
             >
               Sign <span class="text-lowercase">up</span>
@@ -214,7 +260,7 @@
                     width="59"
                     height="39"
                     rx="4.5"
-                    fill="#F4F4F4"
+                    :fill="$vuetify.theme.dark ? '#3B4150' : '#F4F4F4'"
                     stroke=""
                   />
                   <path
@@ -242,7 +288,7 @@
                     width="59"
                     height="39"
                     rx="4.5"
-                    fill="#F4F4F4"
+                    :fill="$vuetify.theme.dark ? '#3B4150' : '#F4F4F4'"
                     stroke=""
                   />
                   <g clip-path="url(#clip0)">
@@ -279,7 +325,9 @@
 
             <div class="py-2 text-center font-weight-bold">
               Have a account ?
-              <a href="/login" @click.stop> Log in </a>
+              <nuxt-link to="/login">
+                 Log in
+              </nuxt-link>           
             </div>
           </v-col>
         </v-container>
@@ -292,10 +340,20 @@ export default {
   layout: "Blank",
   data() {
     return {
+      registerData: {
+        type: null,
+        name: null,
+        email: null,
+        password: "",
+        password_confirmation: "",
+        phoneNumber: null,
+        ref_id: null,
+        country_code: "+82",
+        privacyPolicyAccepted: false,
+      },
       isMounted: false,
       showEmail: false,
-      checkbox: null,
-      selectedPhoneNumber: "+82",
+      showConfirmPass: false,
       showPassword: false,
       rules: {
         required: (value) => !!value || "Required.",
@@ -303,14 +361,31 @@ export default {
       },
     };
   },
-   mounted() {
+  mounted() {
     this.isMounted = true;
+  },
+  methods: {
+    register() {
+      // Registering with Mobile or Email
+      if (this.showEmail) this.registerData.type = "email";
+      else this.registerData.type = "phone_number";
+
+      this.$api.authService
+        .signUp(this.registerData)
+        .then((response) => {
+          console.log("response212", response);
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
   },
   computed: {
     renderColumn() {
       if (!this.isMounted) return true;
       return this.$vuetify.breakpoint.mdAndUp;
-    }
+    },
   },
 };
 </script>

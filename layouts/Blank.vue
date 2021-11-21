@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :style="{ background: $vuetify.theme.dark ? '#181a20' : '#e5e5e5' }">
     <v-main>
       <Nuxt />
     </v-main>
@@ -7,7 +7,28 @@
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    const theme = localStorage.getItem("theme");
+    if (theme == "true") {
+      this.$vuetify.theme.dark = true;
+      this.darkMode = true;
+    } else {
+      this.$vuetify.theme.dark = false;
+      this.darkMode = false;
+    }
+  },
+  computed: {
+    darkMode: {
+      get() {
+        return this.$store.getters["global/darkMode"];
+      },
+      set(val) {
+        this.$store.dispatch("global/toggleDarkMode", val);
+      },
+    },
+  },
+};
 </script>
 
 <style>

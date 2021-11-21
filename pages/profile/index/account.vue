@@ -3,7 +3,7 @@
     <v-img
       src="/banners/banner-2.png"
       lazy-src="/banners/banner-2.png"
-      max-width="860px"
+      min-width="auto"
       height="120"
       alt="kyc-banner"
     >
@@ -18,8 +18,8 @@
       </v-row>
     </v-img>
 
-    <v-card flat class="my-5" max-width="860px">
-      <v-card-text class="pa-10 black--text">
+    <v-card flat class="my-5" width="auto">
+      <v-card-text class="pa-10" :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
         <v-row>
           <v-col>
             <div>
@@ -32,7 +32,34 @@
                 hide-details
                 dense
                 append-outer-icon="mdi-plus primary rounded pa-1"
+                @click:append-outer="addReferralId = true"
+                v-if="!addReferralId"
               ></v-text-field>
+
+              <div class="d-flex flex-row" v-else>
+                <v-card flat color="#F4F4F4" min-width="300">
+                  <v-card-text class="pa-2">
+                    <div class="d-flex flex-row flex-wrap">
+                      <v-avatar tile class="mr-3">
+                        <v-img
+                          class="pointer mx-2"
+                          width="48px"
+                          height="48px"
+                          src="/img/referralId.png"
+                          @click="addReferralId = false"
+                        >
+                        </v-img>
+                      </v-avatar>
+
+                      <div class="d-flex flex-column align-self-center">
+                        <h4 class="ft-14 black--text">Win Win</h4>
+
+                        <span class="caption">Ref ID: #9849167613</span>
+                      </div>
+                    </div>
+                  </v-card-text>
+                </v-card>
+              </div>
             </div>
 
             <v-row dense class="my-10">
@@ -125,8 +152,15 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      addReferralId: false,
+    };
+  },
+};
 </script>
 
-<style>
+<style lang="scss" scoped>
+
 </style>

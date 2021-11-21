@@ -1,5 +1,5 @@
 .defaultFont {
-    font-family: 'IBM Plex Sans' !important;
+    font-family: IBM Plex Sans !important;
 }
 
 .robotoFont {
@@ -12,9 +12,23 @@
     }
 }
 
+.noCapitalize {
+    text-transform: none !important;
+}
+
 .bg-white {
-    background-color: #FFFFFF;
-  }
+    .theme--dark {
+        .bg-color {
+            background-color: #1D2027 ;
+        }
+        }
+
+        .theme--light {
+        .bg-color {
+            background-color: #FFFFFF;
+        }
+        }
+}
 
 .outlined {
     border: solid $border 1px !important;
@@ -24,45 +38,74 @@
     height: 100% !important;
 }
 
+.full-width {
+    width: 100% !important;
+}
+
+.auto-width {
+    width: auto !important;
+}
+
+.ml-full {
+    margin-left: 100% !important;
+}
+
 .pointer {
     cursor: pointer;
 }
 
+.position-absolute {
+    position: relative;
+}
+
+// Table
+
+td {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+// Fonts
+
 .font_wght400 {
-    font-weight: 400 !important;
+   
+    font-family: IBM Plex Sans !important;
+    font-size: 14px !important;
     font-style: normal !important;
-    color: black;
+    font-weight: 400 !important;
+    line-height: 18px !important;
+    letter-spacing: 0em !important;
+    text-align: left !important;
+
 }
 
 .font_wght600 {
     font-weight: 600 !important;
     font-style: normal !important;
-    color: black;
+   
 }
 
 .font_wght500 {
     font-weight: 500 !important;
     font-style: normal !important;
-    color: black;
+   
 }
 
 .font_wght700 {
     font-weight: 700 !important;
     font-style: normal !important;
-    color: black;
+    font-family: IBM Plex Sans !important;
+   
 }
 
 // Font Size
-.ft-20 {
-    font-size: 20px !important;
+
+.ft-10 {
+    font-size: 10px !important;
 }
 
-.ft-30 {
-    font-size: 30px !important;
-}
-
-.ft-40 {
-    font-size: 40px !important;
+.ft-12 {
+    font-size: 12px !important;
 }
 
 .ft-14 {
@@ -75,6 +118,22 @@
 
 .ft-18 {
     font-size: 18px !important;
+}
+
+.ft-20 {
+    font-size: 20px !important;
+}
+
+.ft-25 {
+    font-size: 25px !important;
+}
+
+.ft-30 {
+    font-size: 30px !important;
+}
+
+.ft-40 {
+    font-size: 40px !important;
 }
 
 // line-height

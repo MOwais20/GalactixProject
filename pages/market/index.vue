@@ -1,11 +1,16 @@
 <template>
-  <v-container fill-height class="my-5 pa-0">
-    <v-row class="py-5">
-      <v-col cols="3" v-for="(data, index) in marketCards" :key="index">
+  <v-container fill-height class="my-5 pa-2">
+    <v-row>
+      <v-col
+        :cols="$vuetify.breakpoint.smAndUp ? '3' : '12'"
+        v-for="(data, index) in marketCards"
+        :key="index"
+      >
         <v-card
           flat
           width="auto"
-          height="200"
+          min-height="200px"
+          :height="$vuetify.breakpoint.smAndUp ? 'fit-content' : 'auto'"
           :class="data.chart ? '' : 'elevation-5'"
         >
           <v-row
@@ -35,15 +40,30 @@
             <br />
             <span class="font_wght500 ft-14 grey--text">{{ data.label }}</span>
           </div>
-          <v-img
+          <!-- <v-img
             :src="
               data.chart
                 ? '/img/SuccesslinearChart.svg'
                 : '/img/WarninglinearChart.svg'
             "
-            min-height="109.5px"
+            height="auto"
             width="auto"
-          ></v-img>
+          ></v-img> -->
+
+          <!-- <ChartMarket :color="data.chart ? '#00D673' : '#FF315A'" /> -->
+
+          <v-sparkline
+            id="marketChart"
+            height="100%"
+            :fill="true"
+            :gradient="data.chart ? ['#49db92', '#ffffff'] : ['#FF315A', '#ffffff']"
+            :line-width="5"
+            :padding="1"
+            :smooth="20"
+            type="trend"
+            :value="[0, 2, 5, 9, 5, 3, 5, 15, 0, 1, 8, 2, 9, 0]"
+            auto-draw
+          ></v-sparkline>
         </v-card>
       </v-col>
     </v-row>
@@ -58,8 +78,92 @@
 
     <v-card class="mb-15" width="100%">
       <v-card-text>
-        <v-row no-gutters style="max-height: 70px">
-          <v-col class="mt-2 d-flex">
+        <v-tabs slider-size="4" v-model="tab" active-class="active-tabs">
+          <v-tab
+            v-for="item in marketTabs"
+            :key="item"
+            class="font_wght400 ft-16 noCapitalize"
+          >
+            {{ item }}
+          </v-tab>
+
+          <v-spacer />
+          <v-text-field
+            style="max-width: 300px"
+            placeholder="Search for coins"
+            filled
+            hide-details
+            rounded
+            dense
+          >
+            <template v-slot:prepend-inner>
+              <v-img
+                class="pointer mx-2"
+                max-width="20"
+                height="20"
+                lazy-src="/icons/MagnifyingGlass.png"
+                src="/icons/MagnifyingGlass.png"
+              />
+            </template>
+          </v-text-field>
+        </v-tabs>
+        <v-divider></v-divider>
+
+        <v-tabs-items v-model="tab">
+          <v-tab-item v-for="item in marketTabs" :key="item">
+            <v-data-table
+              :headers="headers"
+              :items="market"
+              hide-default-footer
+            >
+              <template v-slot:item="{ item }">
+                <tr>
+                  <td>
+                    <div class="d-flex flex-row flex-wrap">
+                      <v-img
+                        class="pointer mx-2"
+                        max-width="20"
+                        height="20"
+                        src="/icons/Star.png"
+                      />
+                      <span class="dark--text font-weight-bold"
+                        >{{ item.pair1 }}
+                        <span class="grey--text font-weight-light">{{
+                          item.Pair2
+                        }}</span></span
+                      >
+                    </div>
+                  </td>
+                  <td class="text-right">
+                    <span class="dark--text text-right">{{ item.price }}</span>
+                  </td>
+                  <td class="text-right">
+                    <span class="success--text">{{ item.change }}</span>
+                  </td>
+                  <td class="text-right">
+                    <span class="dark--text">{{ item.high }}</span>
+                  </td>
+                  <td class="text-right">
+                    <span class="dark--text">{{ item.low }}</span>
+                  </td>
+                  <td class="text-right">
+                    <span class="dark++ --text">{{ item.volume }}</span>
+                  </td>
+                  <td class="text-right">
+                    <v-btn text class="outlined">
+                      <span class="font_wght500 ft-14 trade-btn"
+                        >Trade now</span
+                      >
+                    </v-btn>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-tab-item>
+        </v-tabs-items>
+
+        <!-- <v-row no-gutters style="max-height: 70px">
+          <v-col class="mt-2 d-flex flex-wrap">
             <v-btn
               plain
               text
@@ -95,7 +199,7 @@
             <v-spacer />
             <v-text-field
               style="max-width: 300px"
-              placeholder="Tìm kiếm coin"
+              placeholder="Search for coins"
               filled
               hide-details
               rounded
@@ -111,55 +215,8 @@
               </template>
             </v-text-field>
           </v-col>
-        </v-row>
+        </v-row> -->
       </v-card-text>
-      <v-data-table
-        fixed-header
-        :headers="headers"
-        :items="market"
-        hide-default-footer
-      >
-        <template v-slot:item="{ item }">
-          <tr>
-            <td>
-              <div class="d-flex flex-row flex-wrap">
-                <v-img
-                  class="pointer mx-2"
-                  max-width="20"
-                  height="20"
-                  src="/icons/Star.png"
-                />
-                <span class="dark--text font-weight-bold"
-                  >{{ item.pair1 }}
-                  <span class="grey--text font-weight-light">{{
-                    item.Pair2
-                  }}</span></span
-                >
-              </div>
-            </td>
-            <td class="text-right">
-              <span class="dark--text text-right">{{ item.price }}</span>
-            </td>
-            <td class="text-right">
-              <span class="success--text">{{ item.change }}</span>
-            </td>
-            <td class="text-right">
-              <span class="dark--text">{{ item.high }}</span>
-            </td>
-            <td class="text-right">
-              <span class="dark--text">{{ item.low }}</span>
-            </td>
-            <td class="text-right">
-              <span class="dark++ --text">{{ item.volume }}</span>
-            </td>
-            <td class="text-right">
-              <v-btn text class="primary--text outlined">
-                <span class="font-weight-light ft-14">Trade now</span>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
     </v-card>
   </v-container>
 </template>
@@ -168,6 +225,8 @@
 export default {
   data() {
     return {
+      tab: null,
+      marketTabs: ["Favorite", "BTC Market", "ETH Market", "USDT Market"],
       marketCards: [
         {
           coin: "ETH/BTC",
@@ -305,8 +364,47 @@ export default {
       ],
     };
   },
+  created() {
+    
+  },
+  methods: {
+    // clickTO() {
+    //   var circle1 = document.getElementById("marketChart").getElementsByTagName('path')[0].attributes[2].value = "red"; 
+    //   // circle1.style.stroke="blue";
+    //   //circle1.setAttribute("fill", "red")
+    //   console.log('dadas',circle1);
+    // }
+  }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.v-tabs {
+  color: grey !important;
+}
+
+.v-tab--active {
+  color: white !important;
+  font-family: IBM Plex Sans !important;
+  font-size: 16px !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  line-height: 19px !important;
+  letter-spacing: 0em !important;
+  text-align: center !important;
+}
+
+.v-tabs-slider-wrapper {
+  .v-tabs-slider {
+    width: 62px !important;
+  }
+}
+
+.trade-btn {
+  color: #c99400 !important;
+}
+
+.chartColor {
+  background: linear-gradient(180deg, rgba(69, 217, 148, 0.747) 0%, rgb(69, 217, 148) 100%);
+}
 </style>
