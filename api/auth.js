@@ -21,7 +21,7 @@ export default ($axios) => ({
   async loginViaPhone(params) {
     return await $axios.$post('/api/auth/login_with_phone_number', params )
       .then(response => {
-        localStorage.setItem("token", response.data.access_token); 
+        if (response && response.data && response.data.access_token) localStorage.setItem("token", response.data.access_token); 
         return response 
       })
       .catch(error => { throw error });
@@ -30,7 +30,7 @@ export default ($axios) => ({
   async loginViaEmail(params) {
     return await $axios.$post('/api/auth/login_with_email',  params )
       .then(response => { 
-        localStorage.setItem("token", response.data.access_token); 
+        if (response && response.data && response.data.access_token) localStorage.setItem("token", response.data.access_token); 
         return response 
        })
       .catch(error => { throw error });
@@ -48,7 +48,7 @@ export default ($axios) => ({
       .catch(error => { throw error });
   },
 
-  async ResetPassword(params) {
+  async resetPassword(params) {
     return await $axios.$post('/api/auth/reset_pass', params )
       .then(response => { return response })
       .catch(error => { throw error });

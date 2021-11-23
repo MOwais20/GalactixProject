@@ -2,7 +2,7 @@ import { mapActions } from 'vuex';
 import store from '@/store/auth.js';
 
 export default function ({ $axios, redirect }) {
-    $axios.setToken(`${localStorage.getItem("token")}`)
+    $axios.setToken(`Bearer ${localStorage.getItem("token")}`);
     $axios.onError(error => {
         console.log('error', error.response);
         if (error && error.response && error.response.status === 401) {

@@ -19,7 +19,10 @@
     </v-img>
 
     <v-card flat class="my-5" width="auto">
-      <v-card-text class="pa-10" :class="$vuetify.theme.dark ? 'white--text' : 'black--text'">
+      <v-card-text
+        class="pa-10"
+        :class="$vuetify.theme.dark ? 'white--text' : 'black--text'"
+      >
         <v-row>
           <v-col>
             <div>
@@ -54,7 +57,7 @@
                       <div class="d-flex flex-column align-self-center">
                         <h4 class="ft-14 black--text">Win Win</h4>
 
-                        <span class="caption">Ref ID: #9849167613</span>
+                        <span class="caption">Ref ID: #{{ refID }}</span>
                       </div>
                     </div>
                   </v-card-text>
@@ -84,7 +87,7 @@
                   <v-text-field
                     placeholder="Email"
                     class="mt-2"
-                    value="vietanh@vutatech.vn"
+                    v-model="userEmail"
                     filled
                     hide-details
                     dense
@@ -156,11 +159,35 @@ export default {
   data() {
     return {
       addReferralId: false,
+      accountDetails: null,
+      userEmail: null,
+      refID: null,
+
     };
+  },
+  mounted() {
+    this.getAccountDetails();
+  },
+  methods: {
+    getAccountDetails() {
+      this.$api.userService
+        .getUserProfile()
+        .then((response) => {
+          this.accountDetails = response && response.data;
+          console.log('response', response);
+          if (response && response.data) {
+            this.userEmail = response.data.email;
+            this.refID = response.data.ref_id;
+          }
+          
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-
 </style>

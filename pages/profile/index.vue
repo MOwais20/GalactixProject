@@ -257,12 +257,12 @@ svg {
 }
 
 .circle {
-  position: absolute;
+  position: relative;
   /* z-index: 99; */
   width: 24px;
   height: 24px;
-  top: 170px;
-  right: 150px;
+  top: -30px;
+  left: 25px;
   border-radius: 50%;
 }
 
