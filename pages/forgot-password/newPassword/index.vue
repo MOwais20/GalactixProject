@@ -12,6 +12,7 @@
               placeholder="New password"
               hint="At least 8 characters"
               max-width="332px"
+              v-model.trim="password"
               filled
             >
               <template v-slot:append>
@@ -38,6 +39,7 @@
               placeholder="Confirm new password"
               hint="At least 8 characters"
               max-width="332px"
+              v-model.trim="confirmPassword"
               filled
             >
               <template v-slot:append>
@@ -65,7 +67,7 @@
               depressed
               color="primary"
               class="black--text text-capitalize font-weight-bold my-12"
-              @click.stop.prevent="passwordChanged = true"
+              @click.stop.prevent="resetPass"
             >
               Change Password
             </v-btn>
@@ -73,13 +75,14 @@
 
           <!-- Verfication Screen -->
           <div v-else>
-             <h1 class="py-5 font-weight-black">Change password success !</h1>
+            <h1 class="py-5 font-weight-black">Change password success !</h1>
 
-            <v-img 
-            height="106.44px"
-            width="106.44px"
-            class="mx-auto"
-            src="/img/CheckCircle.svg"></v-img>
+            <v-img
+              height="106.44px"
+              width="106.44px"
+              class="mx-auto"
+              src="/img/CheckCircle.svg"
+            ></v-img>
           </div>
         </div>
       </v-col>
@@ -88,10 +91,15 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   layout: "Blank",
   data() {
     return {
+      code: null,
+      password: "",
+      confirmPassword: "",
       showPassword: false,
       showConfirmPassword: false,
       passwordChanged: false,
@@ -104,6 +112,52 @@ export default {
   created() {
     // doing temporary
     this.passwordChanged = false;
+
+    // Route Params
+    if (this.$route.params && this.$route.params.code) {
+      this.code = this.$route.params.code;
+    }
+  },
+  computed: {
+    ...mapGetters("auth", [
+      "getEmail",
+      "getPhoneNumber",
+      "getCountryCode",
+      "emailSelected",
+    ]),
+  },
+  methods: {
+    resetPass() {
+      let params = {
+        auth: this.emailSelected ? "email" : "phone_number",
+        code: this.code,
+        password: this.password.toString(),
+        password_confirmation: this.confirmPassword.toString()
+      };
+
+      // Check code sent from email or phoneNumber
+      if (this.emailSelected) params.email = this.userEmail;
+      else {
+        params.country_code = this.getCountryCode;
+        params.phone_number = parseInt(this.getPhoneNumber);
+      }
+
+      this.$api.authService
+        .resetPassword(params)
+        .then((response) => {
+          console.log("Reset PAss Response", response);
+          if (response && response.status == 200) {
+            this.passwordChanged = true;
+
+            setTimeout(() => {
+              this.$router.push('/')
+            }, 3000);
+          }
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
   },
 };
 </script>
