@@ -225,13 +225,14 @@
 export default {
   data() {
     return {
+      GFM: null,
       tab: null,
       marketTabs: ["Favorite", "BTC Market", "ETH Market", "USDT Market"],
       marketCards: [
         {
           coin: "ETH/BTC",
           value: 0.065552,
-          amount: "$2,519.21",
+           amount: "$2,519.21",
           label: "KL: 254.20 BTC",
           chart: true,
         },
@@ -367,6 +368,10 @@ export default {
   created() {
     
   },
+  mounted() {
+    this.GetFavoriteMarket()
+    this.GetMarketCards()
+  },
   methods: {
     // clickTO() {
     //   var circle1 = document.getElementById("marketChart").getElementsByTagName('path')[0].attributes[2].value = "red"; 
@@ -374,7 +379,31 @@ export default {
     //   //circle1.setAttribute("fill", "red")
     //   console.log('dadas',circle1);
     // }
+
+    GetFavoriteMarket() {
+      this.$api.Market
+      .favorites_market()
+      .then((response) => {
+        console.log("response212", response.data);
+        this.market = response.data
+        return response;
+      })
+      .catch((error) => {
+        throw error;
+      });
+    },
+    GetMarketCards() {
+    this.$api.Market
+      .get_markets()
+      .then((response) => {
+        console.log("Market Cards: ", response.data);
+        return response;
+      })
+      .catch((error) => {
+        throw error;
+      });
   }
+  },
 };
 </script>
 
