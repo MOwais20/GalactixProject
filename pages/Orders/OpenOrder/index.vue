@@ -209,6 +209,22 @@ export default {
       },
     ],
   }),
+  mounted() {
+    this.OpenOrder()
+  },
+  methods: {
+    OpenOrder() {
+      this.$api.orderService.order_opening()
+        .then((response) => {
+          this.market = response.data;
+          console.log("OpenOrder", response.data);
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    }
+  }
 };
 </script>
 

@@ -5,6 +5,7 @@
         :cols="$vuetify.breakpoint.smAndUp ? '3' : '12'"
         v-for="(data, index) in marketCards"
         :key="index"
+
       >
         <v-card
           flat
@@ -56,7 +57,9 @@
             id="marketChart"
             height="100%"
             :fill="true"
-            :gradient="data.chart ? ['#49db92', '#ffffff'] : ['#FF315A', '#ffffff']"
+            :gradient="
+              data.chart ? ['#49db92', '#ffffff'] : ['#FF315A', '#ffffff']
+            "
             :line-width="5"
             :padding="1"
             :smooth="20"
@@ -225,14 +228,14 @@
 export default {
   data() {
     return {
-      GFM: null,
+      GFM: [],
       tab: null,
       marketTabs: ["Favorite", "BTC Market", "ETH Market", "USDT Market"],
       marketCards: [
         {
           coin: "ETH/BTC",
           value: 0.065552,
-           amount: "$2,519.21",
+          amount: "$2,519.21",
           label: "KL: 254.20 BTC",
           chart: true,
         },
@@ -365,44 +368,48 @@ export default {
       ],
     };
   },
-  created() {
-    
-  },
+  created() {},
   mounted() {
-    this.GetFavoriteMarket()
-    this.GetMarketCards()
+    this.GetFavoriteMarket();
+    this.GetMarketCards();
+    console.log("GFMMMMMM", this.GFM)
   },
   methods: {
     // clickTO() {
-    //   var circle1 = document.getElementById("marketChart").getElementsByTagName('path')[0].attributes[2].value = "red"; 
+    //   var circle1 = document.getElementById("marketChart").getElementsByTagName('path')[0].attributes[2].value = "red";
     //   // circle1.style.stroke="blue";
     //   //circle1.setAttribute("fill", "red")
     //   console.log('dadas',circle1);
     // }
 
     GetFavoriteMarket() {
-      this.$api.Market
-      .favorites_market()
-      .then((response) => {
-        console.log("response212", response.data);
-        this.market = response.data
-        return response;
-      })
-      .catch((error) => {
-        throw error;
-      });
+      this.$api.Market.favorites_market()
+        .then((response) => {
+          this.market = response.data;
+          console.log("response212", response.data);
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
     },
     GetMarketCards() {
-    this.$api.Market
-      .get_markets()
-      .then((response) => {
-        console.log("Market Cards: ", response.data);
-        return response;
-      })
-      .catch((error) => {
-        throw error;
-      });
-  }
+      this.$api.Market.get_markets()
+        .then((response) => {
+          console.log("Market Cards: ", response.data);
+          this.marketCards = []
+          this.marketCards.push(response.data)
+          // if(this.marketCards){
+            // this.marketCards.map((ele) => {
+            // this.GFM.push(ele)
+          // })
+          // }
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
   },
 };
 </script>
@@ -434,6 +441,10 @@ export default {
 }
 
 .chartColor {
-  background: linear-gradient(180deg, rgba(69, 217, 148, 0.747) 0%, rgb(69, 217, 148) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(69, 217, 148, 0.747) 0%,
+    rgb(69, 217, 148) 100%
+  );
 }
 </style>

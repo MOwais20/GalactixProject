@@ -274,6 +274,22 @@ export default {
       return this.dates.join(" ");
     },
   },
+  mounted() {
+    this.OrderHistory()
+  },
+  methods: {
+    OrderHistory() {
+      this.$api.orderService.order_history()
+        .then((response) => {
+          this.market = response.data;
+          console.log("OrderHistory", response.data);
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    }
+  }
 };
 </script>
 
