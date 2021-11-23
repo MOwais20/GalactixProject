@@ -1,5 +1,9 @@
 export default ($axios) => ({
 
+  async setToken() {
+    $axios.setToken(`Bearer ${localStorage.getItem("token")}`);
+  },
+
   async resend_code(params) {
     return await $axios.$post('/api/auth/resend_code', params )
       .then(response => { return response })
@@ -22,6 +26,8 @@ export default ($axios) => ({
     return await $axios.$post('/api/auth/login_with_phone_number', params )
       .then(response => {
         if (response && response.data && response.data.access_token) localStorage.setItem("token", response.data.access_token); 
+        // Updating Token
+        this.setToken();
         return response 
       })
       .catch(error => { throw error });
@@ -31,6 +37,8 @@ export default ($axios) => ({
     return await $axios.$post('/api/auth/login_with_email',  params )
       .then(response => { 
         if (response && response.data && response.data.access_token) localStorage.setItem("token", response.data.access_token); 
+        // Updating Token
+        this.setToken();
         return response 
        })
       .catch(error => { throw error });
@@ -38,7 +46,12 @@ export default ($axios) => ({
 
   async logout() {
     return await $axios.$post('/api/auth/logout')
-      .then(response => { return response })
+      .then(response => {
+        localStorage.removeItem("token"); 
+        // Removes default Authorization header from `common` scope (all requests)
+        $axios.setToken(false);
+        return response;
+      })
       .catch(error => { throw error });
   },
 

@@ -8,15 +8,15 @@ export default function ({ $axios, redirect }) {
         if (error && error.response && error.response.status === 401) {
             console.log('Store21', mapActions('auth', ['refreshToken']), store);
             // store.mutations.refreshToken()
-            store.dispatch('refreshToken');
-           // redirect('/login')
+            // store.dispatch('refreshToken');
+           redirect('/login')
         }
     })
 
     $axios.onResponseError(error => {
         if (error && error.response && error.response.status === 401) {
             mapActions('auth', ['refreshToken']);
-            //redirect('/login')
+            redirect('/login')
         }
     })
 

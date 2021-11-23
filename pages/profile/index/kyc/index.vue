@@ -33,8 +33,9 @@
                   <v-container fill-height style="max-width: 300px">
                     <div>
                       <v-select
-                        :items="[]"
+                        :items="['Vietnam', 'Arabian', 'American']"
                         menu-props="auto"
+                        v-model="kyc.selectedNationality"
                         placeholder="Nationality"
                         single-line
                         outlined
@@ -44,34 +45,38 @@
                         </template>
                         <template v-slot:append>
                           <!-- Caret Down -->
-                      <svg
-                        class="mx-2"
-                        width="12"
-                        height="7"
-                        viewBox="0 0 12 7"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 1L6 6L1 1"
-                          :stroke="$vuetify.theme.dark ? 'white' : 'black'"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
+                          <svg
+                            class="mx-2"
+                            width="12"
+                            height="7"
+                            viewBox="0 0 12 7"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M11 1L6 6L1 1"
+                              :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
+                          </svg>
                         </template>
                       </v-select>
 
                       <div class="d-flex flex-row flex-wrap align-self-center">
-                        <v-radio-group row class="mx-auto">
+                        <v-radio-group
+                          v-model="kyc.type_card"
+                          row
+                          class="mx-auto"
+                        >
                           <v-radio
                             label="Identity card"
-                            value="radio-1"
+                            value="national "
                           ></v-radio>
                           <v-radio
                             label="Passport"
-                            value="radio-2"
+                            value="passport"
                             class=""
                           ></v-radio>
                         </v-radio-group>
@@ -82,8 +87,8 @@
                         <v-text-field
                           class="mt-2"
                           placeholder="Last name"
+                          v-model="kyc.lastName"
                           filled
-                          value="Pham"
                         ></v-text-field>
                       </div>
 
@@ -91,9 +96,9 @@
                         <h5>First Name</h5>
                         <v-text-field
                           class="mt-2"
+                          v-model="kyc.firstName"
                           placeholder="First Name"
                           filled
-                          value="Viet Anh"
                         ></v-text-field>
                       </div>
 
@@ -133,6 +138,7 @@
                         <v-text-field
                           class="mt-2"
                           placeholder="Enter address"
+                          v-model="kyc.address"
                           filled
                         ></v-text-field>
                       </div>
@@ -141,6 +147,7 @@
                         <h5>Province / City</h5>
                         <v-text-field
                           class="mt-2"
+                          v-model="kyc.city"
                           placeholder="Enter the name of the province/city"
                           filled
                         ></v-text-field>
@@ -379,6 +386,15 @@ export default {
 
       menu1: false,
       menu2: false,
+      kyc: {
+        selectedNationality: null,
+        type_card: null,
+        firstName: "",
+        lastName: "",
+        birthday: null,
+        address: null,
+        city: null,
+      },
     };
   },
 
@@ -395,6 +411,18 @@ export default {
   },
 
   methods: {
+    moveToIdentity() {
+      this.$api.userService
+        .requestKYC(this.kyc)
+        .then((response) => {
+          
+
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
     activateAccount() {
       setTimeout(() => {
         this.e1 = 4;
