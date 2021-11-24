@@ -3,9 +3,8 @@
     <v-row>
       <v-col
         :cols="$vuetify.breakpoint.smAndUp ? '3' : '12'"
-        v-for="(data, index) in marketCards"
+        v-for="(data, index) in GFM"
         :key="index"
-
       >
         <v-card
           flat
@@ -18,7 +17,7 @@
             no-gutters
             class="justify-space-between align-center px-5 py-3"
           >
-            <span class="font_wght700">{{ data.coin }}</span>
+            <span class="font_wght700">{{ data.market.base }} / {{ data.market.symbol }}</span>
 
             <v-chip
               :color="data.chart ? 'success' : 'error'"
@@ -372,7 +371,7 @@ export default {
   mounted() {
     this.GetFavoriteMarket();
     this.GetMarketCards();
-    console.log("GFMMMMMM", this.GFM)
+    console.log("GFMMMMMM", this.GFM);
   },
   methods: {
     // clickTO() {
@@ -383,7 +382,8 @@ export default {
     // }
 
     GetFavoriteMarket() {
-      this.$api.Market.favorites_market()
+      this.$api.marketService
+        .favorites_market()
         .then((response) => {
           this.market = response.data;
           console.log("response212", response.data);
@@ -394,16 +394,14 @@ export default {
         });
     },
     GetMarketCards() {
-      this.$api.Market.get_markets()
+      this.$api.marketService
+        .get_markets()
         .then((response) => {
           console.log("Market Cards: ", response.data);
-          this.marketCards = []
-          this.marketCards.push(response.data)
-          // if(this.marketCards){
-            // this.marketCards.map((ele) => {
-            // this.GFM.push(ele)
-          // })
-          // }
+          for (const [key, value] of Object.entries(response.data)) {
+            console.log(`${key}: ${value}`);
+            this.GFM.push(value);
+          }
           return response;
         })
         .catch((error) => {
