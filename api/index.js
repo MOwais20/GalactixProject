@@ -2,10 +2,12 @@ import authService from '~/api/auth';
 import userService from '~/api/user';
 import marketService from '~/api/Market';
 import orderService from '~/api/Order';
+import launchService from '~/api/launch';
 
 export default ($axios) => ({
   authService: authService($axios),
   userService: userService($axios),
   marketService: marketService($axios),
-  orderService: orderService($axios)
+  orderService: orderService($axios),
+  launchService: launchService($axios)
 })

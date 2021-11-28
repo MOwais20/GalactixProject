@@ -87,13 +87,19 @@
                     Ongoing
                   </v-btn>
                   <v-btn
-                  to="/launchpad/comingSoon" 
-                  plain text class="text-capitalize font-weight-normal">
+                    to="/launchpad/comingSoon"
+                    plain
+                    text
+                    class="text-capitalize font-weight-normal"
+                  >
                     Coming soon
                   </v-btn>
-                  <v-btn 
-                  to="/launchpad/finished"
-                  plain text class="text-capitalize font-weight-normal">
+                  <v-btn
+                    to="/launchpad/finished"
+                    plain
+                    text
+                    class="text-capitalize font-weight-normal"
+                  >
                     Finished
                   </v-btn>
                 </div>
@@ -118,6 +124,8 @@ export default {
   },
   data() {
     return {
+      params: "611cc4d5ef226006913f27fd",
+
       launcpadCards: [
         {
           icon: "/svg/lp-icon1.svg",
@@ -136,6 +144,22 @@ export default {
         },
       ],
     };
+  },
+  mounted() {
+    this.getLauncpadProject();
+  },
+  methods: {
+    getLauncpadProject() {
+      this.$api.launchService
+        .getLaunchpad(this.params)
+        .then((response) => {
+          console.log("LaunchPadddddd", response);
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
   },
 };
 </script>
