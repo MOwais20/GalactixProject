@@ -15,4 +15,4 @@ jobs:
       - run: npm install -g surge
       - run: npm install
       - run: npm run generate
-      - run: surge ./dist/ OWAIS_PORTFOLIO_GAL.surge.sh --token ${{ secrets.TOKEN }
+      - run: surge ./dist/ OWAIS_PORTFOLIO_GAL.surge.sh --token ${{ secrets.TOKEN }}
