@@ -1,5 +1,9 @@
 # galacticx-fe
 
+## Nuxt JS App
+## link: https://owais_portfolio_gal.surge.sh/
+
+
 ## Build Setup
 
 ```bash
