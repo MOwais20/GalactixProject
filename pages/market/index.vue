@@ -1,6 +1,23 @@
 <template>
   <v-container fill-height class="my-5 pa-2">
-    <v-row>
+    <v-row v-if="marketCards && marketCards.length == 0">
+      <!-- Skeleton Loader -->
+      <v-col
+        :cols="$vuetify.breakpoint.smAndUp ? '3' : '12'"
+        v-for="data in 4"
+        :key="data"
+      >
+        <v-skeleton-loader
+          class="mx-auto"
+          width="auto"
+          min-height="200px"
+          :height="$vuetify.breakpoint.smAndUp ? 'fit-content' : 'auto'"
+          type="card"
+        ></v-skeleton-loader>
+      </v-col>
+    </v-row>
+
+    <v-row v-else>
       <v-col
         :cols="$vuetify.breakpoint.smAndUp ? '3' : '12'"
         v-for="(data, index) in marketCards"
@@ -17,28 +34,32 @@
             no-gutters
             class="justify-space-between align-center px-5 py-3"
           >
-            <span class="font_wght700">{{ data.coin }}</span>
+            <span class="font_wght700" v-if="data.name && data.symbol"
+              >{{ data.symbol }}{{ "/" + data.name }}</span
+            >
 
             <v-chip
-              :color="data.chart ? 'success' : 'error'"
+              :color="data.higher >= 0 ? 'success' : 'error'"
               class="white--text"
               width="52px"
               height="24px"
             >
-              0,02%
+              {{ data.change_24h_percent | percentage }}
             </v-chip>
           </v-row>
           <div class="px-5">
             <span
               class="font-weight-bold"
-              :class="data.chart ? 'success--text' : 'error--text'"
-              >{{ data.value }}</span
+              :class="data.higher >= 0 ? 'success--text' : 'error--text'"
+              >{{ data.higher }}</span
             >
-            <span class="grey--text ml-2" style="font-size: 14px">{{
-              data.amount
-            }}</span>
+            <span class="grey--text ml-2" style="font-size: 14px">
+              {{ data.price | currency }}
+            </span>
             <br />
-            <span class="font_wght500 ft-14 grey--text">{{ data.label }}</span>
+            <span class="font_wght500 ft-14 grey--text"
+              >KL: {{ data.volume_24h }} {{ data.symbol }}</span
+            >
           </div>
           <!-- <v-img
             :src="
@@ -56,7 +77,9 @@
             id="marketChart"
             height="100%"
             :fill="true"
-            :gradient="data.chart ? ['#49db92', '#ffffff'] : ['#FF315A', '#ffffff']"
+            :gradient="
+              data.higher >= 0 ? ['#49db92', '#ffffff'] : ['#FF315A', '#ffffff']
+            "
             :line-width="5"
             :padding="1"
             :smooth="20"
@@ -78,7 +101,12 @@
 
     <v-card class="mb-15" width="100%">
       <v-card-text>
-        <v-tabs slider-size="4" v-model="tab" active-class="active-tabs">
+        <v-tabs
+          background-color="transparent"
+          slider-size="4"
+          v-model="tab"
+          active-class="active-tabs"
+        >
           <v-tab
             v-for="item in marketTabs"
             :key="item"
@@ -97,13 +125,38 @@
             dense
           >
             <template v-slot:prepend-inner>
-              <v-img
+              <!-- <v-img
                 class="pointer mx-2"
                 max-width="20"
                 height="20"
                 lazy-src="/icons/MagnifyingGlass.png"
                 src="/icons/MagnifyingGlass.png"
-              />
+              /> -->
+
+              <svg
+                class="mx-2"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9.0625 15.625C12.6869 15.625 15.625 12.6869 15.625 9.0625C15.625 5.43813 12.6869 2.5 9.0625 2.5C5.43813 2.5 2.5 5.43813 2.5 9.0625C2.5 12.6869 5.43813 15.625 9.0625 15.625Z"
+                  stroke="inherit"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M13.7031 13.7031L17.5 17.5"
+                  stroke="inherit"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </template>
           </v-text-field>
         </v-tabs>
@@ -228,34 +281,13 @@ export default {
       tab: null,
       marketTabs: ["Favorite", "BTC Market", "ETH Market", "USDT Market"],
       marketCards: [
-        {
-          coin: "ETH/BTC",
-          value: 0.065552,
-          amount: "$2,519.21",
-          label: "KL: 254.20 BTC",
-          chart: true,
-        },
-        {
-          coin: "BTC/USDT",
-          value: 0.065552,
-          amount: "$2,519.21",
-          label: "KL: 254.20 BTC",
-          chart: false,
-        },
-        {
-          coin: "ETH/BTC",
-          value: 0.065552,
-          amount: "$2,519.21",
-          label: "KL: 254.20 BTC",
-          chart: true,
-        },
-        {
-          coin: "ETH/BTC",
-          value: 0.065552,
-          amount: "$2,519.21",
-          label: "KL: 254.20 BTC",
-          chart: true,
-        },
+        // {
+        //   coin: "ETH/BTC",
+        //   value: 0.065552,
+        //   amount: "$2,519.21",
+        //   label: "KL: 254.20 BTC",
+        //   chart: true,
+        // },
       ],
       headers: [
         {
@@ -364,17 +396,47 @@ export default {
       ],
     };
   },
-  created() {
-    
+  mounted() {
+    //this.GetFavoriteMarket();
+    this.GetMarketCards();
   },
   methods: {
+    chartData(array) {
+      if (array && array.length > 0) {
+        // converting into integer
+        array = array.map(Number);
+        console.log("Array 2", array);
+        return array;
+      }
+    },
+    GetFavoriteMarket() {
+      this.$api.marketService.favorites_market().then((response) => {
+        this.market = response.data;
+        return response;
+      });
+    },
+    GetMarketCards() {
+      this.$api.marketService
+        .get_markets()
+        .then((response) => {
+          // // Reset Array
+          this.marketCards = [];
+
+          this.marketCards = response.data;
+          console.log("Market Cards: ", this.marketCards);
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
     // clickTO() {
-    //   var circle1 = document.getElementById("marketChart").getElementsByTagName('path')[0].attributes[2].value = "red"; 
+    //   var circle1 = document.getElementById("marketChart").getElementsByTagName('path')[0].attributes[2].value = "red";
     //   // circle1.style.stroke="blue";
     //   //circle1.setAttribute("fill", "red")
     //   console.log('dadas',circle1);
     // }
-  }
+  },
 };
 </script>
 
@@ -405,6 +467,10 @@ export default {
 }
 
 .chartColor {
-  background: linear-gradient(180deg, rgba(69, 217, 148, 0.747) 0%, rgb(69, 217, 148) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(69, 217, 148, 0.747) 0%,
+    rgb(69, 217, 148) 100%
+  );
 }
 </style>

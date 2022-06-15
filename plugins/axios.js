@@ -1,26 +1,35 @@
-import { mapActions } from 'vuex';
-import store from '@/store/auth.js';
 
-export default function ({ $axios, redirect }) {
+export default function ({ $axios, redirect, $toast }) {
     $axios.setToken(`Bearer ${localStorage.getItem("token")}`);
+
+    $axios.onRequest(config => {
+        window.$nuxt.$loading.start();
+        return config;
+    })
+
     $axios.onError(error => {
-        console.log('error', error.response);
-        if (error && error.response && error.response.status === 401) {
-            console.log('Store21', mapActions('auth', ['refreshToken']), store);
-            // store.mutations.refreshToken()
-            // store.dispatch('refreshToken');
+        window.$nuxt.$loading.finish()
+        $toast.error(`${error && error.response && error.response.data && error.response.data.message || 'Error'}`)
+        if (error && error.response && error.response.status === 401 || error.response.data.message == 'TOKEN_IS_INVALID') {
            redirect('/login')
         }
     })
 
     $axios.onResponseError(error => {
-        if (error && error.response && error.response.status === 401) {
-            mapActions('auth', ['refreshToken']);
+        window.$nuxt.$loading.finish()
+        $toast.error(`${error && error.response && error.response.data && error.response.data.message || 'Error'}`)
+        if (error && error.response && error.response.status === 401 || error.response.data.message == 'TOKEN_IS_INVALID') {
             redirect('/login')
         }
     })
 
     $axios.onResponse(response => {
-        // Do things u needed.
+        window.$nuxt.$loading.finish()
+        if(response && response.data && response.data.status) {
+            let httpsStatus = response.data.status;
+            if (httpsStatus.toString().charAt(0) != '2') {
+                $toast.error(`${response && response.data && response.data.message}`)
+            }
+        }
     })
 }

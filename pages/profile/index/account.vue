@@ -13,7 +13,7 @@
         </v-col>
 
         <v-col align="center" align-self="center">
-          <v-btn> Verify Account </v-btn>
+          <v-btn nuxt to="/profile/kyc" :color="$vuetify.theme.dark ? '#3B4150' : ''"> Verify Account </v-btn>
         </v-col>
       </v-row>
     </v-img>
@@ -96,18 +96,20 @@
                   >
                     <template v-slot:append-outer>
                       <v-img
+                        v-if="user && user.is_verify_login_email"
                         src="/icons/CheckCircle.png"
                         alt="verified"
                         max-width="20px"
                         height="20px"
                       />
 
-                      <!-- <v-img
+                      <v-img
+                        v-else
                         src="/icons/XCircle.png"
                         alt="unverified"
                         max-width="20px"
                         height="20px"
-                      /> -->
+                      />
                     </template>
                   </v-text-field>
                 </div>
@@ -167,6 +169,8 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -201,6 +205,9 @@ export default {
       refID: null,
       accountVerified: false,
     };
+  },
+  computed: {
+    ...mapGetters("global", ["user"]),
   },
   mounted() {
     this.getAccountDetails();

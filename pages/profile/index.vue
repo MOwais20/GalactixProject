@@ -7,8 +7,8 @@
             <v-col align="center">
               <v-avatar size="150px" class="ma-3">
                 <v-img
-                  src="/img/profile.png"
-                  lazy-src="/img/profile.png"
+                  :src="profilePic"
+                  :lazy-src="profilePic"
                   alt="Profile_Picture"
                   max-height="150px"
                   max-width="150px"
@@ -16,13 +16,52 @@
                 </v-img>
               </v-avatar>
 
-              <div class="circle white">
-                <v-icon class="pointer mx-auto" color="black" small
-                  >mdi-pencil</v-icon
+              <div>
+                <v-menu
+                  max-width="280"
+                  rounded="rounded-lg"
+                  offset-y
+                  close-on-content-click
                 >
+                  <template v-slot:activator="{ attrs, on }">
+                    <div class="circle">
+                      <v-icon
+                        v-bind="attrs"
+                        v-on="on"
+                        class="pointer white mx-auto rounded-xl pa-1"
+                        :dark="true"
+                        :color="$vuetify.theme.dark ? '#000000' : 'black'"
+                        medium
+                        >mdi-pencil</v-icon
+                      >
+                    </div>
+                  </template>
+
+                  <v-list>
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <v-file-input
+                            accept="image/png, image/jpeg, image/jpg, image/gif, image/svg"
+                            v-model="avatarImage"
+                            placeholder="Change Avatar"
+                            persistent-placeholder
+                            hide-details
+                            solo
+                            flat
+                            dense
+                          >
+                          </v-file-input>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </div>
 
-              <div class="font-weight-bold pa-2 ft-20">Pham Viet Anh</div>
+              <div class="font-weight-bold pa-2 ft-20 black-font">
+                {{ getUserName ? getUserName : getUserId }}
+              </div>
 
               <div
                 class="
@@ -35,7 +74,7 @@
                   pa-1
                 "
               >
-                <span class="mx-1">Ref ID: #9849167613</span>
+                <span class="mx-1 black-font">Ref ID: #9849167613</span>
 
                 <v-btn icon>
                   <v-img
@@ -183,7 +222,14 @@
               </div>
 
               <div class="d-flex align-start flex-column mt-15 logout-btn">
-                <v-btn nuxt to="/login" active-class="primary" plain text class="ma-1">
+                <v-btn
+                  nuxt
+                  @click="logout"
+                  active-class="primary"
+                  plain
+                  text
+                  class="ma-1"
+                >
                   <svg
                     width="24"
                     height="24"
@@ -230,11 +276,61 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
+  data() {
+    return {
+      avatarImage: null,
+      uploadFile: false,
+    };
+  },
   middleware({ route, redirect, from }) {
     if (route.path == "/profile" || route.path == "/profile/") {
       return redirect("/profile/account");
     }
+  },
+  watch: {
+    avatarImage(val) {
+      if (val) {
+        this.uploadPicture();
+      }
+    },
+  },
+  methods: {
+    ...mapActions("global", ["setAvatar"]),
+    ...mapActions("auth", ["logout"]),
+    uploadPicture() {
+      let data = new FormData();
+      data.append("avatar", this.avatarImage);
+
+      this.$api.userService.uploadAvatar(data).then((response) => {
+        // update avatar
+        this.setAvatar(response && response.data);
+        this.$toast.success(response && response.message);
+        // reset Input
+        this.avatarImage = null;
+      });
+    },
+  },
+  computed: {
+    ...mapGetters("global", ["user"]),
+    profilePic() {
+      if (this.user && this.user.avatar) return this.user.avatar;
+      return "/img/userImage.png";
+    },
+    getUserName() {
+      if (!this.user) this.$store.dispatch("global/setUser");
+      let fullName =
+        this.user && this.user.firstName + this.user && this.user.lastName;
+      return fullName ? fullName : "";
+    },
+    getUserId() {
+      if (this.user && this.user._id) {
+        if (this.user._id.length > 24) return this.user._id.substring(0, 24);
+        return this.user._id;
+      }
+    },
   },
 };
 </script>
@@ -259,11 +355,16 @@ svg {
 .circle {
   position: relative;
   /* z-index: 99; */
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   top: -30px;
   left: 25px;
   border-radius: 50%;
+
+  .v-text-field {
+    padding-top: 0px;
+    margin-top: 0px;
+  }
 }
 
 .logout-btn {

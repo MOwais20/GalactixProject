@@ -1,11 +1,13 @@
 import colors from 'vuetify/es5/util/colors'
 
+const BASE_API_URL = process.env.BROWSER_BASE_URL
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   ssr:false,
   head: {
-    titleTemplate: '%s - galacticx-fe',
-    title: 'galacticx-fe',
+    titleTemplate: '%s',
+    title: 'Gooex',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -29,6 +31,8 @@ export default {
     '~plugins/ApexChart.js',
     '~plugins/services.js',
     '~plugins/axios.js',
+    '~plugins/vue-toast.js',
+    '~plugins/vuelidate.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -61,21 +65,42 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/toast',
+    'vue-currency-filter/nuxt'
+  ],
+
+  currencyFilter: [
+    { // default name 'currency' filter
+      symbol: '$',
+      thousandsSeparator: ',',
+      fractionCount: 2,
+      fractionSeparator: '.',
+      symbolPosition: 'front',
+      symbolSpacing: true,
+      avoidEmptyDecimals: '',
+    },
   ],
 
   toast: {
     position: 'top-right',
     duration: 3000,
+    fitToScreen: true,
+    singleton: true,
+    keepOnHover: true,
+    className: 'defaultFont font-weight-bold',
+  },
+
+  router: {
+    middleware: ['auth']
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: process.env.API_BASE_URL || 'https://core.nikex.io',
+    baseURL: BASE_API_URL || 'https://core.nikex.io',
   },
 
   publicRuntimeConfig: {
     axios: {
-      browserBaseURL: process.env.BROWSER_BASE_URL
+      browserBaseURL: BASE_API_URL
     }
   },
 

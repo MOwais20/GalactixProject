@@ -19,12 +19,31 @@
                 style="height: 40px"
               >
                 <template v-slot:prepend-inner>
-                  <v-img
-                    class="pointer mx-2"
+                  <!-- MagnifyingGlass SVG -->
+                  <svg
+                    class="mx-2"
                     width="20"
                     height="20"
-                    src="/icons/MagnifyingGlass.png"
-                  />
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.0625 15.625C12.6869 15.625 15.625 12.6869 15.625 9.0625C15.625 5.43813 12.6869 2.5 9.0625 2.5C5.43813 2.5 2.5 5.43813 2.5 9.0625C2.5 12.6869 5.43813 15.625 9.0625 15.625Z"
+                      stroke="inherit"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.7031 13.7031L17.5 17.5"
+                      stroke="inherit"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                 </template>
               </v-text-field>
             </div>
@@ -480,12 +499,33 @@
                             style="height: 40px"
                           >
                             <template v-slot:prepend-inner>
-                              <v-img
-                                class="pointer mx-2"
+                              <!-- MagnifyingGlass SVG -->
+                              <svg
+                                class="mx-2"
                                 width="20"
                                 height="20"
-                                src="/icons/MagnifyingGlass.png"
-                              />
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                :stroke="
+                                  $vuetify.theme.dark ? 'white' : 'black'
+                                "
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M9.0625 15.625C12.6869 15.625 15.625 12.6869 15.625 9.0625C15.625 5.43813 12.6869 2.5 9.0625 2.5C5.43813 2.5 2.5 5.43813 2.5 9.0625C2.5 12.6869 5.43813 15.625 9.0625 15.625Z"
+                                  stroke="inherit"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M13.7031 13.7031L17.5 17.5"
+                                  stroke="inherit"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
                             </template>
                           </v-text-field>
                         </div>
@@ -565,22 +605,22 @@
                   </template>
                   <template v-slot:append>
                     <!-- Caret Down -->
-                      <svg
-                        class="mx-2"
-                        width="12"
-                        height="7"
-                        viewBox="0 0 12 7"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 1L6 6L1 1"
-                          :stroke="$vuetify.theme.dark ? 'white' : 'black'"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
+                    <svg
+                      class="mx-2"
+                      width="12"
+                      height="7"
+                      viewBox="0 0 12 7"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M11 1L6 6L1 1"
+                        :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
                   </template>
                 </v-select>
               </div>
@@ -653,7 +693,12 @@
               <v-col align="start">
                 <span class="grey--text ft-14 font_wght400">BTC Balance</span>
                 <h3 class="ft-16">0.00000000</h3>
-                <v-btn depressed class="my-3" color="primary" :width="$vuetify.breakpoint.width < 1700 ? 'auto' : '190px'">
+                <v-btn
+                  depressed
+                  class="my-3"
+                  color="primary"
+                  :width="$vuetify.breakpoint.width < 1700 ? 'auto' : '190px'"
+                >
                   Deposit
                 </v-btn>
               </v-col>
@@ -661,7 +706,12 @@
               <v-col align="start">
                 <span class="grey--text ft-14 font_wght400">USDT Balance</span>
                 <h3 class="ft-16">0.00000000</h3>
-                <v-btn @click="popUpDepositMsg = true" text class="outlined my-3" :width="$vuetify.breakpoint.width < 1700 ? 'auto' : '190px'">
+                <v-btn
+                  @click="popUpDepositMsg = true"
+                  text
+                  class="outlined my-3"
+                  :width="$vuetify.breakpoint.width < 1700 ? 'auto' : '190px'"
+                >
                   Withdraw
                 </v-btn>
               </v-col>
@@ -757,8 +807,10 @@
       </v-col>
     </v-row>
 
-    <TradeDepositModal @close="popUpDepositMsg = false" :modal="popUpDepositMsg" />
-
+    <TradeDepositModal
+      @close="popUpDepositMsg = false"
+      :modal="popUpDepositMsg"
+    />
   </v-container>
 </template>
 
@@ -1262,7 +1314,7 @@ export default {
           text: "Change",
           align: "right",
           value: "name",
-          class: 'px-2',
+          class: "px-2",
         },
         {
           text: "Vol",
@@ -1276,7 +1328,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .row-maxWidth {
   max-width: 1920px;
 }

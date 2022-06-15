@@ -23,6 +23,8 @@
     "nuxt": "^2.15.7",
     "vue-apexcharts": "^1.6.2",
     "vue-cryptoicon": "^0.18.0-a",
+    "vue-currency-filter": "^5.2.0",
+    "vuelidate": "^0.7.6",
     "vuetify": "^2.5.5"
   },
   "devDependencies": {

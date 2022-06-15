@@ -22,10 +22,13 @@
 
           <div>
             <v-select
-              :items="['English', 'French', 'Spanish']"
+              :items="languages"
               v-model="selectedLanguage"
               hide-details
+              placeholder="Language"
               height="40px"
+              item-text="name"
+              item-value="value"
               outlined
               style="max-width: 200px"
             ></v-select>
@@ -71,7 +74,13 @@
           </div>
 
           <div>
-            <v-switch inset hide-details class="mt-0"> </v-switch>
+            <v-switch
+              inset
+              hide-details
+              v-model="notification.activity"
+              class="mt-0"
+            >
+            </v-switch>
           </div>
         </div>
         <v-divider class="mt-2"></v-divider>
@@ -91,7 +100,13 @@
           </div>
 
           <div>
-            <v-switch inset hide-details class="mt-0"> </v-switch>
+            <v-switch
+              inset
+              hide-details
+              v-model="notification.trade"
+              class="mt-0"
+            >
+            </v-switch>
           </div>
         </div>
         <v-divider class="mt-2"></v-divider>
@@ -113,7 +128,13 @@
           </div>
 
           <div>
-            <v-switch inset hide-details class="mt-0"> </v-switch>
+            <v-switch
+              inset
+              v-model="emailPush.activity"
+              hide-details
+              class="mt-0"
+            >
+            </v-switch>
           </div>
         </div>
         <v-divider class="mt-2"></v-divider>
@@ -133,7 +154,8 @@
           </div>
 
           <div>
-            <v-switch inset hide-details class="mt-0"> </v-switch>
+            <v-switch v-model="emailPush.news" inset hide-details class="mt-0">
+            </v-switch>
           </div>
         </div>
       </v-card-text>
@@ -142,28 +164,128 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   data() {
     return {
-      selectedLanguage: "English",
+      selectedLanguage: null,
+      notification: {
+        activity: 0,
+        trade: 0,
+      },
+      emailPush: {
+        activity: 0,
+        news: 0,
+      },
+      languages: [
+        {
+          name: "English",
+          value: "en",
+        },
+        {
+          name: "Vietnamese",
+          value: "vi",
+        },
+      ],
     };
   },
+  mounted() {
+    this.loadSettings();
+  },
   computed: {
+    ...mapGetters("global", ["user"]),
     darkMode: {
       get() {
-        return this.$store.getters['global/darkMode'];
+        return this.$store.getters["global/darkMode"];
       },
       set(val) {
-        this.$store.dispatch('global/toggleDarkMode', val);
-      }
-    }
+        let obj = {
+          type: "theme_mode",
+          value: val ? "dark" : "light",
+        };
+        this.saveSettings(obj);
+        this.$store.dispatch("global/toggleDarkMode", val);
+      },
+    },
+    notify_activities() {
+      return this.notification.activity;
+    },
+    notify_trade() {
+      return this.notification.trade;
+    },
+    email_news() {
+      return this.emailPush.news;
+    },
+    email_activity() {
+      return this.emailPush.activity;
+    },
   },
   watch: {
+    email_news(val) {
+      let obj = {
+        type: "is_email_news",
+        value: val ? 1 : 0,
+      };
+      this.saveSettings(obj);
+    },
+    email_activity(val) {
+      let obj = {
+        type: "is_email_activities",
+        value: val ? 1 : 0,
+      };
+      this.saveSettings(obj);
+    },
+    notify_activities(val) {
+      let obj = {
+        type: "is_notify_activities",
+        value: val ? 1 : 0,
+      };
+      this.saveSettings(obj);
+    },
+    notify_trade(val) {
+      let obj = {
+        type: "is_notify_trade",
+        value: val ? 1 : 0,
+      };
+      this.saveSettings(obj);
+    },
     darkMode(val) {
       this.toggleDarkMode(val);
     },
   },
   methods: {
+    saveSettings(obj) {
+      this.$api.userService.profileSettings(obj).then((response) => {
+        if (response.data) {
+          // // notifications
+          // this.notification.activity = response.data.is_notify_activities;
+          // this.notification.trade = response.data.is_notify_trade;
+
+          // // Email push
+          // this.emailPush.activity = response.data.is_email_activities;
+          // this.emailPush.news = response.data.is_email_news;
+
+          this.$store.commit("global/setUser", response.data);
+        }
+      });
+    },
+    loadSettings() {
+      if (this.user) {
+        this.selectedLanguage = this.languages.find(
+          (el) => el.value == this.user.language
+        );
+        this.darkMode = this.user.theme_mode == 'dark' ? true : false;
+
+        // notifications
+        this.notification.activity = this.user.is_notify_activities;
+        this.notification.trade = this.user.is_notify_trade;
+
+        // Email push
+        this.emailPush.activity = this.user.is_email_activities;
+        this.emailPush.news = this.user.is_email_news;
+      }
+    },
     toggleDarkMode(val) {
       this.$vuetify.theme.dark = val;
       localStorage.setItem("theme", this.$vuetify.theme.dark.toString());

@@ -110,28 +110,30 @@
               v-if="$vuetify.breakpoint.smAndUp"
               placeholder="Email"
               class="mx-2"
-              value="vietanh@vutatech.vn"
+              v-model="security.email"
               filled
               hide-details
               dense
-              style="max-width: 250px"
+              style="max-width: 260px"
               height="40px"
               append-outer-icon="pa-1"
             >
               <template v-slot:append-outer>
                 <v-img
+                  v-if="user && user.is_verify_login_email"
                   src="/icons/CheckCircle.png"
                   alt="verified"
                   max-width="20px"
                   height="20px"
                 />
 
-                <!-- <v-img
-                        src="/icons/XCircle.png"
-                        alt="unverified"
-                        max-width="20px"
-                        height="20px"
-                      /> -->
+                <v-img
+                  v-else
+                  src="/icons/XCircle.png"
+                  alt="unverified"
+                  max-width="20px"
+                  height="20px"
+                />
               </template>
             </v-text-field>
           </div>
@@ -146,7 +148,7 @@
             <v-text-field
               placeholder="Email"
               class="mx-2"
-              value="vietanh@vutatech.vn"
+              v-model="security.email"
               filled
               hide-details
               dense
@@ -260,14 +262,17 @@
         @close="closeVerifyDialog"
       />
     </v-dialog>
+
+    <AuthTwoFactor />
   </v-container>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 export default {
   data() {
     return {
-      googleAuth: false,
       verifyEmail: false,
       verifyPhone: false,
       verifyDialog: false,
@@ -329,6 +334,9 @@ export default {
         { text: "Browser", align: "right", value: "browser" },
         { text: "Device", align: "right", value: "device" },
       ],
+      security: {
+        email: null,
+      },
     };
   },
   watch: {
@@ -338,8 +346,27 @@ export default {
     verifyEmail(val) {
       if (val) this.verifyDialog = true;
     },
+    user() {
+      if (this.user && this.user.email) {
+        this.security.email = this.user.email;
+      }
+    },
   },
+  computed: {
+    ...mapGetters("global", ["user"]),
+    ...mapGetters("auth", ["twofaDialog"]),
+    googleAuth: {
+      get() {
+        return this.twofaDialog;
+      },
+      set(val) {
+        this.initTwofaDialog(val);
+      }
+    }
+  },
+
   methods: {
+    ...mapActions("auth", ["initTwofaDialog"]),
     closeVerifyDialog() {
       // closing dialog box.
       this.verifyDialog = false;

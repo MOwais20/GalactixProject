@@ -64,8 +64,10 @@
                 style="max-width: 332px"
                 filled
                 v-model="registerData.name"
-                hide-details
                 placeholder="Your name"
+                :error-messages="nameErrors"
+                @input="$v.name.$touch()"
+                @blur="$v.name.$touch()"
               ></v-text-field>
             </div>
 
@@ -75,8 +77,10 @@
                 style="max-width: 332px"
                 filled
                 v-model="registerData.email"
-                hide-details
                 placeholder="Email"
+                :error-messages="emailErrors"
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
               ></v-text-field>
             </div>
 
@@ -89,11 +93,11 @@
                     :items="['+82', '+75']"
                     menu-props="auto"
                     placeholder="+00"
-                    hide-details
                     style="max-width: 120px"
                     single-line
                     class="phoneSelector"
                     outlined
+                    
                   >
                     <template v-slot:prepend-inner>
                       <img
@@ -131,9 +135,11 @@
                 <v-col align="left">
                   <v-text-field
                     filled
-                    hide-details
+                    hide-spin-buttons
+                    type="number"
                     v-model="registerData.phoneNumber"
                     style="max-width: 202px"
+                   
                     placeholder="Phone number"
                   ></v-text-field>
                 </v-col>
@@ -155,6 +161,9 @@
                 v-model="registerData.password"
                 dense
                 @click:append="showPassword = !showPassword"
+                :error-messages="passwordErrors"
+                @input="$v.password.$touch()"
+                @blur="$v.password.$touch()"
               >
                 <template v-slot:append>
                   <v-icon
@@ -190,6 +199,9 @@
                 v-model="registerData.password_confirmation"
                 dense
                 @click:append="showConfirmPass = !showConfirmPass"
+                :error-messages="passwordErrors"
+                @input="$v.password.$touch()"
+                @blur="$v.password.$touch()"
               >
                 <template v-slot:append>
                   <v-icon
@@ -325,9 +337,7 @@
 
             <div class="py-2 text-center font-weight-bold">
               Have a account ?
-              <nuxt-link to="/login">
-                 Log in
-              </nuxt-link>           
+              <nuxt-link to="/login"> Log in </nuxt-link>
             </div>
           </v-col>
         </v-container>
@@ -336,7 +346,20 @@
   </v-container>
 </template>
 <script>
+import { validationMixin } from "vuelidate";
+import { required, maxLength, email } from "vuelidate/lib/validators";
+
 export default {
+  mixins: [validationMixin],
+  validations: {
+    name: { required, maxLength: maxLength(12) },
+    password: { required, maxLength: maxLength(8) },
+    // phoneNumber: {
+    //   intl_Code,
+    //   number,
+    // },
+    email: { email },
+  },
   layout: "Blank",
   data() {
     return {
@@ -352,7 +375,7 @@ export default {
         privacyPolicyAccepted: false,
       },
       isMounted: false,
-      showEmail: false,
+      showEmail: true,
       showConfirmPass: false,
       showPassword: false,
       rules: {
@@ -365,7 +388,23 @@ export default {
     this.isMounted = true;
   },
   methods: {
+    resetFields() {
+      this.registerData = {
+        type: null,
+        name: null,
+        email: null,
+        password: "",
+        password_confirmation: "",
+        phoneNumber: null,
+        ref_id: null,
+        country_code: "+82",
+        privacyPolicyAccepted: false,
+      };
+    },
     register() {
+      this.$v.$touch();
+      if (this.$v.$anyError) return;
+
       // Registering with Mobile or Email
       if (this.showEmail) this.registerData.type = "email";
       else this.registerData.type = "phone_number";
@@ -373,7 +412,11 @@ export default {
       this.$api.authService
         .signUp(this.registerData)
         .then((response) => {
-          console.log("response212", response);
+          if (response && response.status == 200) {
+            //reset Fields
+            this.resetFields();
+            this.$router.push("/login");
+          }
           return response;
         })
         .catch((error) => {
@@ -385,6 +428,43 @@ export default {
     renderColumn() {
       if (!this.isMounted) return true;
       return this.$vuetify.breakpoint.mdAndUp;
+    },
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.name.$dirty) return errors;
+      !this.$v.name.maxLength &&
+        errors.push("Name must be at most 12 characters long");
+      !this.$v.name.required && errors.push("Name is required.");
+      return errors;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      if (this.registerData && !this.registerData.email) errors.push("E-mail is required");
+      return errors;
+    },
+    phoneCodeErrors() {
+      const errors = [];
+      if (!this.$v.phoneNumber.intl_Code.$dirty) return errors;
+      !this.$v.phoneNumber.intl_Code.required &&
+        errors.push("Number code is required.");
+      return errors;
+    },
+    phoneErrors() {
+      const errors = [];
+      if (!this.$v.phoneNumber.number.$dirty) return errors;
+      !this.$v.phoneNumber.number.required &&
+        errors.push("Phone number is required.");
+      return errors;
+    },
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.maxLength &&
+        errors.push("Password must be at most 8 characters long");
+      !this.$v.password.required && errors.push("Password is required.");
+      return errors;
     },
   },
 };

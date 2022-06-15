@@ -6,6 +6,7 @@ const state = () => ({
         number: null,
     },
     emailSelected: true, // Represents wether email or phoneNumber selected
+    twofaDialog: false,
 })
 
 const getters = {
@@ -23,6 +24,9 @@ const getters = {
     },
     emailSelected(state) {
         return state.emailSelected;
+    },
+    twofaDialog(state) {
+        return state.twofaDialog;
     }
 }
 
@@ -59,9 +63,15 @@ const mutations = {
     setEmailSelected(state, payload) {
         state.emailSelected = payload
     },
+    initTwofaDialog(state, payload) {
+        state.twofaDialog = payload
+    }
 }
 
 const actions = {
+    initTwofaDialog({ commit }, payload) {
+        commit('initTwofaDialog', payload);
+    },
     setloginDetails({ commit }, payload) {
         commit('setloginDetails', payload);
     },

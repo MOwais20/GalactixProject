@@ -8,7 +8,13 @@
             class="d-flex flex-row flex-wrap align-center justify-space-between"
           >
             <div>
-              <v-btn nuxt to="/blog/all" plain text class="text-capitalize font-weight-normal">
+              <v-btn
+                nuxt
+                to="/blog/all"
+                plain
+                text
+                class="text-capitalize font-weight-normal"
+              >
                 All
               </v-btn>
               <v-btn plain text class="text-capitalize font-weight-normal">
@@ -32,13 +38,31 @@
                 v-model="search"
               >
                 <template v-slot:prepend-inner>
-                  <v-img
-                    class="pointer mx-2"
-                    max-width="20"
+                  <!-- MagnifyingGlass SVG -->
+                  <svg
+                    class="mx-2"
+                    width="20"
                     height="20"
-                    lazy-src="/icons/MagnifyingGlass.png"
-                    src="/icons/MagnifyingGlass.png"
-                  />
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    :stroke="$vuetify.theme.dark ? 'white' : 'black'"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.0625 15.625C12.6869 15.625 15.625 12.6869 15.625 9.0625C15.625 5.43813 12.6869 2.5 9.0625 2.5C5.43813 2.5 2.5 5.43813 2.5 9.0625C2.5 12.6869 5.43813 15.625 9.0625 15.625Z"
+                      stroke="inherit"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M13.7031 13.7031L17.5 17.5"
+                      stroke="inherit"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                 </template>
               </v-text-field>
             </div>
@@ -49,7 +73,6 @@
 
     <!-- Child Components -->
     <nuxt-child> </nuxt-child>
-
   </div>
 </template>
 

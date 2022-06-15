@@ -17,11 +17,12 @@
             placeholder="Old password"
             hint="At least 8 characters"
             max-width="332px"
+            v-model="credentials.old_pass"
             filled
           >
             <template v-slot:append>
               <v-icon
-                color="black"
+                :color="$vuetify.theme.dark ? 'white' : 'black'"
                 @click="showOldPassword = !showOldPassword"
                 v-if="showOldPassword"
                 >mdi-eye</v-icon
@@ -43,11 +44,12 @@
             placeholder="New password"
             hint="At least 8 characters"
             max-width="332px"
+             v-model="credentials.password"
             filled
           >
             <template v-slot:append>
               <v-icon
-                color="black"
+                :color="$vuetify.theme.dark ? 'white' : 'black'"
                 @click="showNewPassword = !showNewPassword"
                 v-if="showNewPassword"
                 >mdi-eye</v-icon
@@ -69,11 +71,12 @@
             placeholder="Confirm password"
             hint="At least 8 characters"
             max-width="332px"
+            v-model="credentials.password_confirmation"
             filled
           >
             <template v-slot:append>
               <v-icon
-                color="black"
+               :color="$vuetify.theme.dark ? 'white' : 'black'"
                 @click="showConfirmPassword = !showConfirmPassword"
                 v-if="showConfirmPassword"
                 >mdi-eye</v-icon
@@ -98,7 +101,7 @@
             depressed
             color="primary"
             class="px-5 py-3"
-            @click="closeDialog"
+            @click="changePass"
           >
             Change password
           </v-btn>
@@ -119,11 +122,18 @@
           ></v-img>
 
           <div class="py-4 ft-14 black--text">
-              Please turn on <span class="primary--text">2FA</span>, include <span class="primary--text">Google Authenticator</span>
+            Please turn on <span class="primary--text">2FA</span>, include
+            <span class="primary--text">Google Authenticator</span>
           </div>
 
-          <v-btn height="42px" depressed class="px-6" color="primary" @click="enableGoogleAuth = false">
-              Security
+          <v-btn
+            height="42px"
+            depressed
+            class="px-6"
+            color="primary"
+            @click="enableGoogleAuth = false"
+          >
+            Security
           </v-btn>
         </v-card-text>
       </v-card>
@@ -141,6 +151,11 @@ export default {
       showNewPassword: false,
       showConfirmPassword: false,
       enableGoogleAuth: false,
+      credentials: {
+        old_pass: '',
+        password: '',
+        password_confirmation: ''
+      }
     };
   },
   methods: {
@@ -148,6 +163,17 @@ export default {
       this.dialog = false;
       // enableGoogleAuth Dialog
       this.enableGoogleAuth = true;
+    },
+    changePass() {
+      this.$api.userService
+        .changePassword(this.credentials)
+        .then((response) => {
+          if (response.status == 200) this.closeDialog();
+          return response;
+        })
+        .catch((error) => {
+          throw error;
+        });
     },
   },
 };

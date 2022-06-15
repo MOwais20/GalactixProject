@@ -154,7 +154,7 @@
                   <v-col align-self="start">
                     <span class="ft-14 grey--text">Estimated balance</span>
                     <p class="font_wght600 ft-25">
-                      0,00001567
+                      {{ getBalance.toFixed(2) }}
                       <span class="font-weight-light ft-14 grey--text"
                         >BTC</span
                       >
@@ -684,6 +684,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   data: () => ({
     showBuy: false,
@@ -959,6 +961,7 @@ export default {
     ],
   }),
   computed: {
+    ...mapGetters("wallet", ["getBalance"]),
     balance() {
       let val = 0;
       return `Balance: ${val} BTC`;

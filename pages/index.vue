@@ -8,7 +8,7 @@
         :src="'/banners/homeban.png'"
       >
         <v-container fill-height>
-          <v-row justify="start" style="max-width: 1180px" class="mx-auto">
+          <v-row no-gutters justify="start" class="mx-auto max-wd">
             <v-col align-self="center">
               <div>
                 <h1 class="white--text py-3 display-2">
@@ -36,7 +36,8 @@
             <v-col align-self="center">
               <v-img
                 height="335px"
-                width="580px"
+                contain
+                max-width="580px"
                 src="/banners/dice.png"
               ></v-img>
             </v-col>
@@ -588,6 +589,10 @@ export default {
 // .Homebg-color {
 //   background-color: #e5e5e5;
 // }
+
+.max-wd {
+  max-width: 1180px;
+}
 
 .account-banner {
   width: 100%;

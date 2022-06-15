@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   data() {
     return {
@@ -38,7 +40,7 @@ export default {
       title: "Binance",
     };
   },
-  mounted() {
+  created() {
     const theme = localStorage.getItem("theme");
     if (theme == "true") {
       this.$vuetify.theme.dark = true;
@@ -47,6 +49,14 @@ export default {
       this.$vuetify.theme.dark = false;
       this.darkMode = false;
     }
+
+    this.setUser();
+    this.loadBalance();
+    this.getCurrencies();
+  },
+  methods: {
+    ...mapActions('wallet', ['loadBalance']),
+    ...mapActions('global', ['setUser','getCurrencies']),
   },
   computed: {
     darkMode: {

@@ -4,7 +4,7 @@
       <v-col align-self="center">
         <v-card flat min-height="860">
           <div>
-            <v-stepper color="secondary" flat v-model="e1">
+            <v-stepper flat v-model="e1">
               <v-stepper-header class="ft-14">
                 <v-divider></v-divider>
 
@@ -249,7 +249,6 @@
                           <v-file-input
                             v-model="file1"
                             color="primary"
-                            multiple
                             prepend-icon=""
                             filled
                             height="179"
@@ -273,7 +272,6 @@
                           <v-file-input
                             v-model="file2"
                             color="primary"
-                            multiple
                             prepend-icon=""
                             filled
                             height="179"
@@ -374,8 +372,8 @@ export default {
   data() {
     return {
       kycComplete: false,
-      file1: [],
-      file2: [],
+      file1: null,
+      file2: null,
       e1: 1,
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
@@ -408,15 +406,35 @@ export default {
     date(val) {
       this.dateFormatted = this.formatDate(this.date);
     },
+    file1(val) {
+      if (val) {
+        let option = 'identity_frontend';
+        this.uploadIdentityImg(this.file1, option);
+      }
+    },
+    file2(val) {
+      if (val) {
+        let option = 'identity_backend';
+        this.uploadIdentityImg(this.file2, option);
+      }
+    }
   },
 
   methods: {
+    uploadIdentityImg(file, option) {
+      let data = new FormData();
+      data.append("identity_frontend",  file);
+      data.append("Option",  option);
+
+      this.$api.userService.uploadKycImg(data).then((response) => {
+        this.$toast.success(response && response.message);
+        file = null;
+      });
+    },
     moveToIdentity() {
       this.$api.userService
         .requestKYC(this.kyc)
         .then((response) => {
-          
-
           return response;
         })
         .catch((error) => {

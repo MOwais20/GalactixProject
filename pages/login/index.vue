@@ -2,7 +2,7 @@
   <v-container fill-height>
     <v-row
       justify="center"
-      :class="$vuetify.breakpoint.mdAndUp ? 'outlined' : ''"
+      :class="$vuetify.breakpoint.mdAndUp ? 'outlined' : 'rounded'"
       align="center"
       class="bg-white"
       :style="{ backgroundColor: $vuetify.theme.dark ? '#1D2027' : '#FFFFFF' }"
@@ -62,9 +62,12 @@
                 class="py-1"
                 filled
                 width="332px"
-                v-model="email"
+                v-model.trim="email"
+                :error-messages="emailErrors"
                 dense
                 placeholder="Email"
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
               ></v-text-field>
             </div>
 
@@ -119,7 +122,7 @@
                 <v-col cols="7">
                   <v-text-field
                     filled
-                    v-model="phoneNumber"
+                    v-model.trim="phoneNumber"
                     width="202px"
                     hide-details
                     placeholder="Phone number"
@@ -135,8 +138,12 @@
               name="input-10-2"
               placeholder="Password"
               hint="At least 8 characters"
-              v-model="password"
+              v-model.trim="password"
+              @keyup.enter="login"
               width="332px"
+              :error-messages="passwordErrors"
+              @input="$v.password.$touch()"
+              @blur="$v.password.$touch()"
               filled
             >
               <template v-slot:append>
@@ -166,6 +173,7 @@
             <v-btn
               color="primary"
               block
+              :disabled="$v.$anyError"
               max-width="332px"
               height="42px"
               depressed
@@ -194,7 +202,7 @@
                     width="59"
                     height="39"
                     rx="4.5"
-                    fill="#F4F4F4"
+                    :fill="$vuetify.theme.dark ? '#3B4150' : '#F4F4F4'"
                     stroke=""
                   />
                   <path
@@ -222,7 +230,7 @@
                     width="59"
                     height="39"
                     rx="4.5"
-                    fill="#F4F4F4"
+                    :fill="$vuetify.theme.dark ? '#3B4150' : '#F4F4F4'"
                     stroke=""
                   />
                   <g clip-path="url(#clip0)">
@@ -272,21 +280,23 @@
 <script>
 import EyeIcon from "../../static/img/EyeClosed.png";
 import { mapActions } from "vuex";
+import { validationMixin } from "vuelidate";
+import { required, maxLength, email } from "vuelidate/lib/validators";
 
 export default {
-  layout: "Blank",
-  computed: {
-    icon() {
-      return EyeIcon;
-    },
+  mixins: [validationMixin],
+  validations: {
+    password: { required, maxLength: maxLength(8) },
+    email: { email },
   },
+  layout: "Blank",
   data() {
     return {
       email: null,
       password: "",
       phoneNumber: null,
       isMounted: false,
-      showEmail: false,
+      showEmail: true,
       checkbox: null,
       selectedCountryCode: "+82",
       showPassword: false,
@@ -298,16 +308,38 @@ export default {
   },
   mounted() {
     this.isMounted = true;
+    this.$v.$reset();
   },
   computed: {
     renderColumn() {
       if (!this.isMounted) return true;
       return this.$vuetify.breakpoint.mdAndUp;
     },
+    icon() {
+      return EyeIcon;
+    },
+    emailErrors() {
+      const errors = [];
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      if (!this.email) errors.push("E-mail is required");
+      return errors;
+    },
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.maxLength &&
+        errors.push("Password must be at most 8 characters long");
+      !this.$v.password.required && errors.push("Password is required.");
+      return errors;
+    },
   },
   methods: {
     ...mapActions("auth", ["setloginDetails"]),
     login() {
+      this.$v.$touch();
+      if (this.$v.$anyError) return;
+
       if (this.showEmail) {
         let loginWithEmail = {
           email: this.email,
